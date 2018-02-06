@@ -2,7 +2,6 @@ const fs = require('fs');
 const discord = require ('discord.js');
 const settings = require('./settings.json');
 var _dynamicChannels = require('./dynamicChannels.js');
-var _permissions = require('./permissions.js')
 var _reactions = require('./reactions.js');
 var mysql = require('mysql');
 
@@ -16,6 +15,8 @@ for (const file of commandFiles)                        // Read commands from th
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.name, command);
 }
+
+
 
 client.on ("ready", onReady);
 client.on("message", onMessage);
