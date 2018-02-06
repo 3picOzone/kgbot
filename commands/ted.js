@@ -15,10 +15,10 @@ module.exports = {
             
             var mysql = require('mysql');
             var con = mysql.createConnection({
-                host: "settings.dbHost",
-                user: "settings.dbUsername",
-                password: "settings.dbPassword",
-                database: "settings.dbDatabase"
+                host: settings.dbHost,
+                user: settings.dbUsername,
+                password: settings.dbPassword,
+                database: settings.dbDatabase
             });
 
             con.connect(function(err) {
