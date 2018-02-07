@@ -3,6 +3,8 @@ const discord = require ('discord.js');
 const settings = require('./settings.json');
 var _dynamicChannels = require('./modules/dynamicChannels.js');
 var _reactions = require('./modules/reactions.js');
+var _deleteLog = require('./logs/messageDeleteLog.js');
+
 
 var client = new discord.Client();
 client.commands = new discord.Collection();
@@ -20,8 +22,10 @@ client.on("message", onMessage);
 client.on("voiceStateUpdate", onVoiceUpdate);
 client.on("messageReactionAdd", onMessageReactionAdd);
 client.on("messageReactionRemove", onMessageReactionRemove);
-client.on('raw', async event => {       // so that all reactions make an event trigger for all reactions
-	if (event.t == 'MESSAGE_REACTION_ADD')
+client.on("messageDelete", onMessageDelete);
+client.on('raw', async event => {       // so that all events trigger for all messages (reactions and message delete)
+    // console.log(event);
+    if (event.t == 'MESSAGE_REACTION_ADD')
     {
         const { d: data } = event;
         const channel = client.channels.get(data.channel_id);
@@ -81,7 +85,7 @@ function onMessage(message)
 		return message.reply('I can\'t execute that command inside DMs!');
     }
     
-    
+
     if (command.args && !args.length)                 // Check to see if the command has defingned args and to see if the proper ammount has been given 
     {
 		let reply = `You didn't provide any arguments, ${message.author}!`;
@@ -150,6 +154,12 @@ function onMessageReactionRemove(messageReaction, user)
     //console.log(`${user.username} removed the reaction "${messageReaction.emoji.name}".`);
     _reactions.execute(messageReaction, user);
 }
+
+function onMessageDelete(message)
+{
+    _deleteLog.execute(message);
+}
+
 
 client.login (settings.token);
 
