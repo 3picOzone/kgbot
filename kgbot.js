@@ -1,9 +1,8 @@
 const fs = require('fs');
 const discord = require ('discord.js');
 const settings = require('./settings.json');
-var _dynamicChannels = require('./dynamicChannels.js');
-var _reactions = require('./reactions.js');
-var mysql = require('mysql');
+var _dynamicChannels = require('./modules/dynamicChannels.js');
+var _reactions = require('./modules/reactions.js');
 
 var client = new discord.Client();
 client.commands = new discord.Collection();
@@ -15,8 +14,6 @@ for (const file of commandFiles)                        // Read commands from th
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.name, command);
 }
-
-
 
 client.on ("ready", onReady);
 client.on("message", onMessage);
@@ -97,7 +94,7 @@ function onMessage(message)
 		return message.channel.send(reply);
     }
 
-    //==================================== Cooldowns ==========================================
+    // ==================================== Cooldowns ==========================================
     if (!cooldowns.has(command.name))                // Check to see if the command has a cooldown 
     {
 		cooldowns.set(command.name, new discord.Collection());
@@ -157,16 +154,11 @@ function onMessageReactionRemove(messageReaction, user)
 client.login (settings.token);
 
 
-// temp ban
-// tedsystem
+// temp ban?
+// tedsystem - temp done for now
 // modmail
 // application
-// help - done?
-// promotion commands
 // accept the Code of conduct
-//console.log(_handler) - useful for help function later? - done?
-
-
 
 /*
 add section:
