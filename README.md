@@ -1,1 +1,1 @@
-# kgbot
+# kgbot for Konvict Gaming
