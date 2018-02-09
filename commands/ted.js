@@ -79,7 +79,7 @@ module.exports = {
                 }
             });
         });
-        con.end();     
+        con.end();   // remove if crashes do not get fixed  
 	},
 };
 
