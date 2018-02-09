@@ -80,6 +80,7 @@ module.exports = {
                         }
                     }
                 });
+                con.end();
             });
         }        
 	},
