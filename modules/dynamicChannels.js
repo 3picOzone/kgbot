@@ -31,7 +31,7 @@ module.exports=
                     }
                 }
             }
-            console.log(`Total empty rooms: ${emptyRooms}`);           
+            // console.log(`Total empty rooms: ${emptyRooms}`);           
             
             // Delete a channel
             if (emptyRooms > 1)
