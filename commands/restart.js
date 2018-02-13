@@ -8,7 +8,7 @@ module.exports = {
     usage: '',                // For help command or if command was sent wrong
     cooldown: 0,                            // Optional Cooldown Between Uses
     args: false,                            // true/false are there any args for this command?
-    guildOnly: false,                       // true/false should it only be used in guild channels and not in PM's
+    guildOnly: true,                       // true/false should it only be used in guild channels and not in PM's
     execute(message, args) {                // Function Goes Here
         if (!message.member.roles.exists("name", "Technician"))
         {

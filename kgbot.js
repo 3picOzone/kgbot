@@ -129,6 +129,7 @@ function onMessage(message)
     // Finally, try and run the command
     try
     {
+        console.log("Running command: " + commandName );
 		command.execute(message, args);
 	}
     catch (error) 
