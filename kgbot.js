@@ -3,7 +3,8 @@ const discord = require ('discord.js');
 const settings = require('./settings.json');
 var _dynamicChannels = require('./modules/dynamicChannels.js');
 var _reactions = require('./modules/reactions.js');
-var _deleteLog = require('./logs/messageDeleteLog.js');
+var _messageDeleteLog = require('./logs/messageDeleteLog.js');
+var _guildBanAddLog = require('./logs/messageDeleteLog.js');
 
 
 var client = new discord.Client();
@@ -22,6 +23,7 @@ client.on("message", onMessage);
 client.on("voiceStateUpdate", onVoiceUpdate);
 client.on("messageReactionAdd", onMessageReactionAdd);
 client.on("messageReactionRemove", onMessageReactionRemove);
+client.on("guildBanAdd", onGuildBanAdd);
 client.on("messageDelete", onMessageDelete);
 client.on('raw', async event => {       // so that all events trigger for all messages (reactions and message delete)
     // console.log(event);
@@ -158,9 +160,13 @@ function onMessageReactionRemove(messageReaction, user)
 
 function onMessageDelete(message)
 {
-    _deleteLog.execute(message);
+    _messageDeleteLog.execute(message);
 }
 
+function onGuildBanAdd(guild,user)
+{
+    _guildBanAddLog.execute(guild,user);
+}
 
 client.login (settings.token);
 
