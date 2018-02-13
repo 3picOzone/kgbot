@@ -12,10 +12,12 @@ module.exports = {
     execute(message, args) {                // Function Goes Here
         if (!message.member.roles.exists("name", "Technician"))
         {
-            message.reply("You do not have permission to execute this command! You must be at least a Moderator!")
+            return message.reply("You do not have permission to execute this command! You must be at least a Moderator!")
         }
         else
         {
+            exec.execFile(/home/kgbotnew/restart.sh;
+            /* Code for full bash command... later use?
             async function shellExec(cmd){
                 return new Promise(function (resolve, reject) {
                     exec(cmd, (err, stdout, stderr) => {
@@ -28,6 +30,7 @@ module.exports = {
                     });
                 });
             };
+            */
         } 
     },
 };
