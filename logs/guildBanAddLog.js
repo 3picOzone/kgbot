@@ -4,14 +4,14 @@ const discord = require ('discord.js');
 
 module.exports= 
 {
-    execute(message)
+    execute(guild, user)
     {
-        if(message.author.bot) return;
+        guild.fetchAuditLogs(user).then(log => console.log(log))
         const embed = new discord.RichEmbed()
-            .setColor('AQUA')
-            .setAuthor("Message Deleted", message.guild.iconURL)
+            .setColor('RED')
+            .setAuthor("User Banned", message.guild.iconURL)
             .setTimestamp()
-            .addField("Banned User: " + message.author.username + "#" + message.author.discriminator, message.content);
+            .addField("Banned User: " + user.username + "#" + user.discriminator, message.content);
         message.guild.channels.find(channel => channel.name.includes("mod-log")).send(embed);
     },   
 };      
