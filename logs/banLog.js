@@ -11,7 +11,7 @@ module.exports=
             .setColor('AQUA')
             .setAuthor("Message Deleted", message.guild.iconURL)
             .setTimestamp()
-            .addField("Sent By: " + message.author.username + "#" + message.author.discriminator, message.content);
+            .addField("Banned User: " + message.author.username + "#" + message.author.discriminator, message.content);
         message.guild.channels.find(channel => channel.name.includes("mod-log")).send(embed);
     },   
 };      
