@@ -6,6 +6,7 @@ module.exports=
 {
     execute(message)
     {
+        if(!message.author) return;
         if(message.author.bot) return;
         const embed = new discord.RichEmbed()
             .setColor('AQUA')
