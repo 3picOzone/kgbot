@@ -6,6 +6,7 @@ module.exports=
 {
     execute(guild, user)
     {
+        console.log("user banned");
         const embed = new discord.RichEmbed()
             .setColor('RED')
             .setAuthor("User Banned", guild.iconURL)

@@ -4,7 +4,7 @@ const settings = require('./settings.json');
 var _dynamicChannels = require('./modules/dynamicChannels.js');
 var _reactions = require('./modules/reactions.js');
 var _messageDeleteLog = require('./logs/messageDeleteLog.js');
-var _guildBanAddLog = require('./logs/messageDeleteLog.js');
+var _guildBanAddLog = require('./logs/guildBanAddLog.js');
 
 
 var client = new discord.Client();
