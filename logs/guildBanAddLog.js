@@ -11,7 +11,7 @@ module.exports=
             .setColor('RED')
             .setAuthor("User Banned", guild.iconURL)
             .setTimestamp()
-            .addField("Banned User: " + user.username + "#" + user.discriminator, message.content);
-        message.guild.channels.find(channel => channel.name.includes("mod-log")).send(embed);
+            .addField("Banned User: ", user.username + "#" + user.discriminator);
+        guild.channels.find(channel => channel.name.includes("mod-log")).send(embed);
     },   
 };      
