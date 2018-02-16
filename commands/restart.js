@@ -16,7 +16,8 @@ module.exports = {
         }
         else
         {
-            exec.execFile("/home/kgbotnew/restart.sh");
+            message.reply("Bot Restarting!").then(
+            exec.execFile("/home/kgbotnew/restart.sh"));
             /* Code for full bash command... later use? 
             async function shellExec(cmd){
                 return new Promise(function (resolve, reject) {
