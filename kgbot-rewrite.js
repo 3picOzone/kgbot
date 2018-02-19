@@ -7,8 +7,6 @@ client.login (settings.token);
 
 // ================== Modules ======================
 
-
-
 client.utilityModule = new discord.Collection();
 client.modetationModule = new discord.Collection();
 client.autoRoleModule = new discord.Collection();

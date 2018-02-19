@@ -1,18 +1,22 @@
 const fs = require('fs');
 const discord = require ('discord.js');
 const settings = require('./settings.json');
-
+/*
 var _dynamicChannels = require('./modules/dynamicChannels.js');
 var _reactions = require('./modules/reactions.js');
 var _messageDeleteLog = require('./logs/messageDeleteLog.js');
 var _guildBanAddLog = require('./logs/guildBanAddLog.js');
-
+*/
 
 var client = new discord.Client();
 
 client.commands = new discord.Collection();
 const commandFiles = fs.readdirSync('./commands');
 const cooldowns = new discord.Collection();             // Collection for the cooldowns
+
+
+console.log (commandFiles);
+
 
 for (const file of commandFiles)                        // Read commands from the commands folder
 {
