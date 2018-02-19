@@ -1,6 +1,7 @@
 const fs = require('fs');
 const discord = require ('discord.js');
 const settings = require('./settings.json');
+
 var _dynamicChannels = require('./modules/dynamicChannels.js');
 var _reactions = require('./modules/reactions.js');
 var _messageDeleteLog = require('./logs/messageDeleteLog.js');
@@ -8,6 +9,7 @@ var _guildBanAddLog = require('./logs/guildBanAddLog.js');
 
 
 var client = new discord.Client();
+
 client.commands = new discord.Collection();
 const commandFiles = fs.readdirSync('./commands');
 const cooldowns = new discord.Collection();             // Collection for the cooldowns
@@ -18,6 +20,8 @@ for (const file of commandFiles)                        // Read commands from th
 	client.commands.set(command.name, command);
 }
 
+
+// =================== EVENTS ======================
 client.on ("ready", onReady);
 client.on("message", onMessage);
 client.on("voiceStateUpdate", onVoiceUpdate);
@@ -25,44 +29,7 @@ client.on("messageReactionAdd", onMessageReactionAdd);
 client.on("messageReactionRemove", onMessageReactionRemove);
 client.on("guildBanAdd", onGuildBanAdd);
 client.on("messageDelete", onMessageDelete);
-client.on('raw', async event => {       // so that all events trigger for all messages (reactions and message delete)
-    // console.log(event);
-    if (event.t == 'MESSAGE_REACTION_ADD')
-    {
-        const { d: data } = event;
-        const channel = client.channels.get(data.channel_id);
-
-        if (channel.messages.has(data.message_id)) return;
-
-        const user = client.users.get(data.user_id);
-        const message = await channel.fetchMessage(data.message_id);
-
-        const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-        const reaction = message.reactions.get(emojiKey);
-
-        client.emit('messageReactionAdd', reaction, user);
-    }
-    else if (event.t == 'MESSAGE_REACTION_REMOVE')
-    {
-        const { d: data } = event;
-        const channel = client.channels.get(data.channel_id);
-
-        if (channel.messages.has(data.message_id)) return;
-
-        const user = client.users.get(data.user_id);
-        const message = await channel.fetchMessage(data.message_id);
-
-        const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-        const reaction = message.reactions.get(emojiKey);
-
-        client.emit('messageReactionRemove', reaction, user);
-    }
-    else{
-        return;
-    }
-});
-
-
+client.on('raw', onRaw);
 
 function onReady()
 {
@@ -185,3 +152,43 @@ add section:
     add role
     
 */
+
+
+
+async function onRaw(event) // so that all events trigger for all messages (reactions)
+{
+        // console.log(event);
+        if (event.t == 'MESSAGE_REACTION_ADD')
+        {
+            const { d: data } = event;
+            const channel = client.channels.get(data.channel_id);
+    
+            if (channel.messages.has(data.message_id)) return;
+    
+            const user = client.users.get(data.user_id);
+            const message = await channel.fetchMessage(data.message_id);
+    
+            const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+            const reaction = message.reactions.get(emojiKey);
+    
+            client.emit('messageReactionAdd', reaction, user);
+        }
+        else if (event.t == 'MESSAGE_REACTION_REMOVE')
+        {
+            const { d: data } = event;
+            const channel = client.channels.get(data.channel_id);
+    
+            if (channel.messages.has(data.message_id)) return;
+    
+            const user = client.users.get(data.user_id);
+            const message = await channel.fetchMessage(data.message_id);
+    
+            const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+            const reaction = message.reactions.get(emojiKey);
+    
+            client.emit('messageReactionRemove', reaction, user);
+        }
+        else{
+            return;
+        }
+}
