@@ -1,12 +1,13 @@
-// ============ Setup/Required packages ===========
+// ============ Setup/Required packages =============
 
     const fs = require('fs');
     const discord = require ('discord.js');
     const settings = require('./settings.json');
     var client = new discord.Client();
     client.login (settings.token);
+    const cooldowns = new discord.Collection();
 
-// ================== Modules ======================
+// ================== Modules =======================
 
     client.modules = {}
 
@@ -84,7 +85,7 @@
         }
     }
 
-// =================== EVENTS ======================
+// =================== EVENTS =======================
 
     client.on ("ready", onReady);
     client.on("message", onMessage);
@@ -105,49 +106,97 @@
     }
 
 
-    function getCommand(){};
+    function getCommand(commandName){
+        for (mod in client.modules)
+        {
+            if (client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName)))
+            {
+                const command = client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+                return command;
+            }
+        }
+        return undefined;
+    };
 
     function onMessage(message)
     {
-        if (!message.content.startsWith(settings.prefix) || message.author.bot) return;        
-        console.log(message);
+        // ************* Check message for requirements and setup message **************
+            if (!message.content.startsWith(settings.prefix) || message.author.bot) return;                                 // insure bot doesn't respond to other bots, or its self
+            const args = message.content.slice(settings.prefix.length).split(/ +/);                                         // get args
+            const commandName = args.shift().toLowerCase();                                                                 // first arg is command name
 
-        
-        
+            var command = getCommand(commandName);                                                                          // get command from the first arg
+            if(!command) return;
+
+            var isOwner = false;
+            if (message.author.id == settings.ownerID) isOwner = true;                                                      // if botOwner matches settings, set to true
+
+        // ********************** Check Command Properties *****************************
+            // Owner Only
+                if(command.ownerOnly && isOwner)
+                {
+
+                }
+            // HIDDEN
+
+
+
+            
+            // Guild Only
+                if (command.guildOnly && message.channel.type !== 'text')                                                       // Should a message be sent only on a guild channel or can it be sent in a dm?
+                {
+                    return message.reply('I can\'t execute that command inside DMs!');
+                }
+
+            // args & usage
+                if (command.args && !args.length)                                                                               // Check to see if the command requires args and see if any were given
+                {
+                    let reply = `You didn't provide any arguments, ${message.author}!`;
+                    if (command.usage)                                                                                          // If  command has a usage property, reply with the proper usage included
+                    {
+                        reply += `\nThe proper usage would be: \`${settings.prefix}${command.name} ${command.usage}\``;
+                    }
+                    return message.channel.send(reply);
+                }
+
+            // Cooldowns
+                if (!cooldowns.has(command.name))                                                                               // Check to see if the command is already in the cooldown collection, if not create it
+                {
+                    cooldowns.set(command.name, new discord.Collection());
+                }
+
+                const now = Date.now();
+                const timestamps = cooldowns.get(command.name);
+                const cooldownAmount = (command.cooldown || 3) * 1000;
+
+                if (!timestamps.has(message.author.id))                                                                         // check to see if the author's ID is already in the timestamps of the cooldown collection
+                {
+                    timestamps.set(message.author.id, now);
+                    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+                }
+                else 
+                {
+                    const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+
+                    if (now < expirationTime) {
+                        const timeLeft = (expirationTime - now) / 1000;
+                        return message.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+                    }
+
+                    timestamps.set(message.author.id, now);
+                    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+                }
+
 
 
         /*
-        const args = message.content.slice(settings.prefix.length).split(/ +/);
-        const commandName = args.shift().toLowerCase();
-
-        const command = client.commands.get(commandName) || 
-                           client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
-        if (!command) return;  // Check to see if command exists, if not return
         
-        if (command.guildOnly && message.channel.type !== 'text')                  // Should a message be sent only on a guild channel or can it be sent in a dm?
-        {
-            return message.reply('I can\'t execute that command inside DMs!');
-        }
         
 
-        if (command.args && !args.length)                 // Check to see if the command has defingned args and to see if the proper ammount has been given 
-        {
-            let reply = `You didn't provide any arguments, ${message.author}!`;
-
-            if (command.usage)                            // Check to see if the command has a usage property, if it does reply with the proper usage included
-            {
-                reply += `\nThe proper usage would be: \`${settings.prefix}${command.name} ${command.usage}\``;
-            }
-
-            return message.channel.send(reply);
-        }
+        
 
         // ==================================== Cooldowns ==========================================
-        if (!cooldowns.has(command.name))                // Check to see if the command has a cooldown 
-        {
-            cooldowns.set(command.name, new discord.Collection());
-        }
+        
         const now = Date.now();
         const timestamps = cooldowns.get(command.name);
         const cooldownAmount = (command.cooldown || 3) * 1000;
