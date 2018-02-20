@@ -1,5 +1,5 @@
 const exec = require('child_process');
-const settings = require('../settings.json');   // THIS FILE NEEDS TO BE IN THE COMMANDS FOLDER!!!!!!!
+const settings = require('../../settings.json');   // THIS FILE NEEDS TO BE IN THE COMMANDS FOLDER!!!!!!!
 
 module.exports = {
     name: 'restart',                   // Command name (same as the file.js name)
