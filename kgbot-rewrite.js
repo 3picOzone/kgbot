@@ -7,11 +7,36 @@ client.login (settings.token);
 
 // ================== Modules ======================
 
-client.utilityModule = new discord.Collection();
-client.modetationModule = new discord.Collection();
-client.autoRoleModule = new discord.Collection();
+client.modules = {}
 
-client.modules = [client.utilityModule, client.modetationModule, client.autoRoleModule];
+function reloadUtility()
+{
+    delete client.modules.utility;
+    delete client.modules.utilityFiles
+    client.modules.utility = new discord.Collection();
+    client.modules.utilityFiles = fs.readdirSync('./commands/utility');
+    for (const file of utilityFiles)                        // Read commands from the module's folder
+    {
+        const command = require(`./commands/utility/${file}`);
+        client.utilityModule.set(command.name, command);
+    }
+}
+
+
+
+client.moderationModule = new discord.Collection();
+const moderationModuleFiles = fs.readdirSync('./commands/moderation');
+for (const file of moderationModuleFiles)                        // Read commands from the module's folder
+{
+	const command = require(`./commands/moderation/${file}`);
+	client.moderationModule.set(command.name, command);
+}
+
+
+client.autoRoleModule = new discord.Collection();
+const autoRoleModuleFiles = fs.readdirSync('./commands/autoRole');
+
+
 
 
 // =================== EVENTS ======================
