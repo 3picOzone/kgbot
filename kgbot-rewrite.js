@@ -7,6 +7,10 @@
     client.login (settings.token);
     const cooldowns = new discord.Collection();
 
+
+    // Helper Files
+    const _permissions = require('./permissions.js');
+
 // ================== Modules =======================
 
     client.modules = {}
@@ -89,12 +93,14 @@
 
     client.on ("ready", onReady);
     client.on("message", onMessage);
+    /*
     client.on("voiceStateUpdate", onVoiceUpdate);
     client.on("messageReactionAdd", onMessageReactionAdd);
     client.on("messageReactionRemove", onMessageReactionRemove);
     client.on("guildBanAdd", onGuildBanAdd);
     client.on("messageDelete", onMessageDelete);
     client.on('raw', onRaw);
+    */
 
 // =============== Event Functions ==================
 
@@ -105,42 +111,24 @@
         reloadAllModules();
     }
 
-
-    function getCommand(commandName){
-        for (mod in client.modules)
-        {
-            if (client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName)))
-            {
-                const command = client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-                return command;
-            }
-        }
-        return undefined;
-    };
-
-    function onMessage(message)
+    async function onMessage(message)                                                                                           // Message handler
     {
         // ************* Check message for requirements and setup message **************
-            if (!message.content.startsWith(settings.prefix) || message.author.bot) return;                                 // insure bot doesn't respond to other bots, or its self
-            const args = message.content.slice(settings.prefix.length).split(/ +/);                                         // get args
-            const commandName = args.shift().toLowerCase();                                                                 // first arg is command name
+            if (!message.content.startsWith(settings.prefix) || message.author.bot) return;                                     // insure bot doesn't respond to other bots, or its self
+            const args = message.content.slice(settings.prefix.length).split(/ +/);                                             // get args
+            const commandName = args.shift().toLowerCase();                                                                     // first arg is command name
 
-            var command = getCommand(commandName);                                                                          // get command from the first arg
+            var command = getCommand(commandName);                                                                              // get command from the first arg
             if(!command) return;
 
             var isOwner = false;
-            if (message.author.id == settings.ownerID) isOwner = true;                                                      // if botOwner matches settings, set to true
-
+            if (message.author.id == settings.ownerID) isOwner = true;  
         // ********************** Check Command Properties *****************************
             // Owner Only
-                if(command.ownerOnly && isOwner)
+                if(command.ownerOnly && !isOwner)
                 {
-
+                    return message.reply("Only the bot owner can use this command!");
                 }
-            // HIDDEN
-
-
-
             
             // Guild Only
                 if (command.guildOnly && message.channel.type !== 'text')                                                       // Should a message be sent only on a guild channel or can it be sent in a dm?
@@ -186,80 +174,59 @@
                     timestamps.set(message.author.id, now);
                     setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
                 }
+            
+            // Permissions
+                if(command.requiredRoles && !isOwner)
+                {
+                    var perms = false;
+                    for(role in command.requiredRoles)
+                    {
+                        if (message.member.roles.exists("name", role)) perms = true;
+                    }
+                    if (!perms) return message.reply("You do not have permissions for this command");
+                }
 
+            // Run Commands
+                try
+                {
+                    console.log("Atempting to run command: " + commandName );
+                    command.execute(message, args, client);
+                }
+                catch (error) 
+                {
+                    console.error(error);
+                    message.reply('There was an error trying to execute that command! Please contact an @technician');
+                }
 
+    };
 
-        /*
-        
-        
-
-        
-
-        // ==================================== Cooldowns ==========================================
-        
-        const now = Date.now();
-        const timestamps = cooldowns.get(command.name);
-        const cooldownAmount = (command.cooldown || 3) * 1000;
-
-        if (!timestamps.has(message.author.id))         // check to see if there is a current cooldown
-        {
-            timestamps.set(message.author.id, now);
-            setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-        }
-        else 
-        {
-            const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
-
-            if (now < expirationTime) {
-                const timeLeft = (expirationTime - now) / 1000;
-                return message.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
-            }
-
-            timestamps.set(message.author.id, now);
-            setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-        }
-        // ================================= End Cooldowns ========================================    
-
-        // Finally, try and run the command
-        try
-        {
-            console.log("Running command: " + commandName );
-            command.execute(message, args);
-        }
-        catch (error) 
-        {
-            console.error(error);
-            message.reply('There was an error trying to execute that command!');
-        }
-        */
-    }
-
+    /*
     function onVoiceUpdate(oldMember, newMember)
     {
         _dynamicChannels.execute(oldMember, newMember);
-    }
+    };
 
     function onMessageReactionAdd(messageReaction, user)
     {
         //console.log(`${user.username} reacted with "${messageReaction.emoji.name}".`);
         _reactions.execute(messageReaction, user);
-    }
+    };
 
     function onMessageReactionRemove(messageReaction, user)
     {
         //console.log(`${user.username} removed the reaction "${messageReaction.emoji.name}".`);
         _reactions.execute(messageReaction, user);
-    }
+    };
 
     function onMessageDelete(message)
     {
         _messageDeleteLog.execute(message);
-    }
+    };
 
     function onGuildBanAdd(guild,user)
     {
         _guildBanAddLog.execute(guild,user);
-    }
+    };
 
     async function onRaw(event) // so that all events trigger for all messages (reactions)
     {
@@ -297,4 +264,26 @@
             else{
                 return;
             }
-    }
+    };
+    */
+
+
+// ============== Helper Functions ==================
+
+    function getCommand(commandName)
+    {
+        for (mod in client.modules)
+        {
+            if (client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName)))
+            {
+                const command = client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+                return command;
+            }
+        }
+        return undefined;
+    };
+
+    function getPermissions()
+    {
+
+    };
