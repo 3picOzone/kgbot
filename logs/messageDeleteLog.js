@@ -12,7 +12,7 @@ module.exports=
             .setAuthor("Message Deleted", message.guild.iconURL)
             .setTimestamp()
             .addField("Sent By: " + message.author.username + "#" + message.author.discriminator, message.content)
-            .setFooter(message.channel.toString());
+            .setFooter(message.channel);
         message.guild.channels.find(channel => channel.name.includes("mod-log")).send(embed);
     },   
 };      
