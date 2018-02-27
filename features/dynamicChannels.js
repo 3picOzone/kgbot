@@ -2,8 +2,8 @@ module.exports=
 {
     execute(oldMember, newMember)
     {
-        var dynamicToken = "[DND]";
-        var parent = "";
+        var dynamicToken = "[Meeting]";
+        var parent;
         // insure that the token is in the name of the channels effected
         if ((oldMember.voiceChannel !== undefined && oldMember.voiceChannel.name.includes(dynamicToken)) ||
             (newMember.voiceChannel !== undefined && newMember.voiceChannel.name.includes(dynamicToken)))     							  // Channel name has the token
