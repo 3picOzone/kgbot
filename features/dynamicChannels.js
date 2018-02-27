@@ -1,8 +1,10 @@
+const settings = require('../settings.json');
+
 module.exports= 
 {
     execute(oldMember, newMember)
     {
-        var dynamicToken = "[DND]";
+        var dynamicToken = settings.dynamicChannelStaffToken;
         var parent;
         // insure that the token is in the name of the channels effected
         if ((oldMember.voiceChannel !== undefined && oldMember.voiceChannel.name.includes(dynamicToken)) ||
