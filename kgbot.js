@@ -105,6 +105,7 @@
     client.on("messageReactionRemove", onMessageReactionRemove);
     client.on("guildBanAdd", onGuildBanAdd);
     client.on("messageDelete", onMessageDelete);
+    client.on("guildMemberAdd", onGuildMemberAdd);
     client.on('raw', onRaw);
 
 // =============== Event Functions ==================
@@ -232,6 +233,23 @@
     {
         _guildBanAddLog.execute(guild,user);
     };
+
+    function onGuildMemberAdd(guildMember)
+    {
+        const welcome = new discord.RichEmbed()
+            .setColor('#FF0000')
+            .setTitle('__Welcome!__')
+            .setAuthor(guildMember.guild.name, guildMember.guild.iconURL)
+            .setThumbnail(guildMember.guild.iconURL)
+            .setDescription("Welcome to KG! To get started, please read the #start_here channel to gain permissions!")
+            .addField("__Guests:__ ", "Start by choosing sections in the #start_here channel! Feel free to apply at http://www.konvictgaming.com to become a member (members get priority for events and fancy colors)", false)
+            .addField("__Applicants:__ ", "Join the application room under konvict staff to get help from a moderator!", false)
+            .addField("__Current Members:__ ", "Connect your account on the website using this link: https://www.konvictgaming.com/account/external-accounts ", false)
+            .setTimestamp()
+            .setFooter('Questions? Contact a Moderator!');
+
+        guildMember.send(welcome);
+    }
 
     async function onRaw(event) // so that all events trigger for all messages (reactions)
     {

@@ -12,7 +12,7 @@ module.exports = {
     execute(message, args) {                // Function Goes Here
         if (!message.member.roles.exists("name", "Technician"))
         {
-            return message.reply("You do not have permission to execute this command! You must be at least a Moderator!")
+            return message.reply("You do not have permission to execute this command! You must be at least a Technician!")
         }
         else
         {
