@@ -11,7 +11,8 @@
     // Helper Files
         const _permissions = require('./permissions.js');
 
-    // Features    
+    // Features   
+        var _modPoke = require("./features/modPoke.js"); 
         var _dynamicChannels = require('./features/dynamicChannels.js');
         var _reactions = require('./features/reactions.js');
         var _messageDeleteLog = require('./logs/messageDeleteLog.js');
@@ -207,6 +208,7 @@
     function onVoiceUpdate(oldMember, newMember)
     {
         _dynamicChannels.execute(oldMember, newMember);
+        _modPoke.execute(oldMember, newMember);
     };
 
     function onMessageReactionAdd(messageReaction, user)
