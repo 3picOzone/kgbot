@@ -4,7 +4,6 @@ module.exports=
 {
     execute(oldMember, newMember)
     {
-        console.log("modpoke running");
         if (newMember.voiceChannel !== undefined && newMember.voiceChannel.name.toLowerCase().includes("applica")) 
         {
             if (  (newMember.voiceChannel !== undefined && (newMember.roles.exists("name", "Mod Leader") || 
