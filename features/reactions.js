@@ -1,6 +1,6 @@
 module.exports= 
 {
-    execute(messageReaction, user)
+    async execute(messageReaction, user)
     {
         if (!messageReaction.me) return;
         if (user.id == "393666734793424898") return;
