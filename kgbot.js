@@ -1,187 +1,306 @@
-const fs = require('fs');
-const discord = require ('discord.js');
-const settings = require('./settings.json');
-var _dynamicChannels = require('./modules/dynamicChannels.js');
-var _reactions = require('./modules/reactions.js');
-var _messageDeleteLog = require('./logs/messageDeleteLog.js');
-var _guildBanAddLog = require('./logs/guildBanAddLog.js');
+// ============ Setup/Required packages =============
+    // Basics
+        const fs = require('fs');
+        const discord = require ('discord.js');
+        const settings = require('./settings.json');
+        var client = new discord.Client();
+        client.login (settings.token);
+        const cooldowns = new discord.Collection();
 
 
-var client = new discord.Client();
-client.commands = new discord.Collection();
-const commandFiles = fs.readdirSync('./commands');
-const cooldowns = new discord.Collection();             // Collection for the cooldowns
+    // Helper Files
+        const _permissions = require('./permissions.js');
 
-for (const file of commandFiles)                        // Read commands from the commands folder
-{
-	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
-}
+    // Features   
+        var _modPoke = require("./features/modPoke.js"); 
+        var _dynamicChannels = require('./features/dynamicChannels.js');
+        var _reactions = require('./features/reactions.js');
+        var _messageDeleteLog = require('./logs/messageDeleteLog.js');
+        var _guildBanAddLog = require('./logs/guildBanAddLog.js');
 
-client.on ("ready", onReady);
-client.on("message", onMessage);
-client.on("voiceStateUpdate", onVoiceUpdate);
-client.on("messageReactionAdd", onMessageReactionAdd);
-client.on("messageReactionRemove", onMessageReactionRemove);
-client.on("guildBanAdd", onGuildBanAdd);
-client.on("messageDelete", onMessageDelete);
-client.on('raw', async event => {       // so that all events trigger for all messages (reactions and message delete)
-    // console.log(event);
-    if (event.t == 'MESSAGE_REACTION_ADD')
+// ================== Modules =======================
+
+    client.modules = {}
+
+    function reloadAllModules()
     {
-        const { d: data } = event;
-        const channel = client.channels.get(data.channel_id);
-
-        if (channel.messages.has(data.message_id)) return;
-
-        const user = client.users.get(data.user_id);
-        const message = await channel.fetchMessage(data.message_id);
-
-        const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-        const reaction = message.reactions.get(emojiKey);
-
-        client.emit('messageReactionAdd', reaction, user);
+        reloadCoreModule();
+        reloadUtilityModule();
+        reloadModerationModule();
+        reloadAutoRoleModule();
+        reloadTedModule();
     }
-    else if (event.t == 'MESSAGE_REACTION_REMOVE')
+
+    function reloadCoreModule()
     {
-        const { d: data } = event;
-        const channel = client.channels.get(data.channel_id);
-
-        if (channel.messages.has(data.message_id)) return;
-
-        const user = client.users.get(data.user_id);
-        const message = await channel.fetchMessage(data.message_id);
-
-        const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-        const reaction = message.reactions.get(emojiKey);
-
-        client.emit('messageReactionRemove', reaction, user);
-    }
-    else{
-        return;
-    }
-});
-
-
-
-function onReady()
-{
-    console.log("Ready!");
-    client.user.setActivity("Konvict Gaming");
-}
-
-function onMessage(message)
-{
-    if (!message.content.startsWith(settings.prefix) || message.author.bot) return;
-
-	const args = message.content.slice(settings.prefix.length).split(/ +/);
-	const commandName = args.shift().toLowerCase();
-
-    const command = client.commands.get(commandName) || 
-                    client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
-    if (!command) return;  // Check to see if command exists, if not return
-    
-    if (command.guildOnly && message.channel.type !== 'text')                  // Should a message be sent only on a guild channel or can it be sent in a dm?
-    {
-		return message.reply('I can\'t execute that command inside DMs!');
-    }
-    
-
-    if (command.args && !args.length)                 // Check to see if the command has defingned args and to see if the proper ammount has been given 
-    {
-		let reply = `You didn't provide any arguments, ${message.author}!`;
-
-        if (command.usage)                            // Check to see if the command has a usage property, if it does reply with the proper usage included
+        delete client.modules.core;
+        delete coreFiles;
+        client.modules.core = new discord.Collection();
+        const coreFiles = fs.readdirSync('./commands/core');
+        for (const file of coreFiles)                        // Read commands from the module's folder
         {
-            reply += `\nThe proper usage would be: \`${settings.prefix}${command.name} ${command.usage}\``;
+            const command = require(`./commands/core/${file}`);
+            client.modules.core.set(command.name, command);
         }
-
-		return message.channel.send(reply);
     }
 
-    // ==================================== Cooldowns ==========================================
-    if (!cooldowns.has(command.name))                // Check to see if the command has a cooldown 
+    function reloadUtilityModule()
     {
-		cooldowns.set(command.name, new discord.Collection());
-	}
-	const now = Date.now();
-	const timestamps = cooldowns.get(command.name);
-	const cooldownAmount = (command.cooldown || 3) * 1000;
-
-    if (!timestamps.has(message.author.id))         // check to see if there is a current cooldown
-    {
-		timestamps.set(message.author.id, now);
-		setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+        delete client.modules.utility;
+        delete utilityFiles;
+        client.modules.utility = new discord.Collection();
+        utilityFiles = fs.readdirSync('./commands/utility');
+        for (const file of utilityFiles)                        // Read commands from the module's folder
+        {
+            const command = require(`./commands/utility/${file}`);
+            client.modules.utility.set(command.name, command);
+        }
     }
-    else 
+
+    function reloadModerationModule()
     {
-		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
-
-		if (now < expirationTime) {
-			const timeLeft = (expirationTime - now) / 1000;
-			return message.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
-		}
-
-		timestamps.set(message.author.id, now);
-		setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+        delete client.modules.moderation;
+        delete moderationFiles;
+        client.modules.moderation = new discord.Collection();
+        moderationFiles = fs.readdirSync('./commands/moderation');
+        for (const file of moderationFiles)                        // Read commands from the module's folder
+        {
+            const command = require(`./commands/moderation/${file}`);
+            client.modules.moderation.set(command.name, command);
+        }
     }
-    // ================================= End Cooldowns ========================================    
 
-    // Finally, try and run the command
-    try
+    function reloadAutoRoleModule()
     {
-        console.log("Running command: " + commandName );
-		command.execute(message, args);
-	}
-    catch (error) 
-    {
-		console.error(error);
-		message.reply('There was an error trying to execute that command!');
+        delete client.modules.autoRole;
+        delete autoRoleFiles;
+        client.modules.autoRole = new discord.Collection();
+        autoRoleFiles = fs.readdirSync('./commands/autoRole');
+        for (const file of autoRoleFiles)                        // Read commands from the module's folder
+        {
+            const command = require(`./commands/autoRole/${file}`);
+            client.modules.autoRole.set(command.name, command);
+        }
     }
-}
 
-function onVoiceUpdate(oldMember, newMember)
-{
-    _dynamicChannels.execute(oldMember, newMember);
-}
+    function reloadTedModule()
+    {
+        delete client.modules.ted;
+        delete tedFiles;
+        client.modules.ted = new discord.Collection();
+        tedFiles = fs.readdirSync('./commands/ted');
+        for (const file of tedFiles)                        // Read commands from the module's folder
+        {
+            const command = require(`./commands/ted/${file}`);
+            client.modules.ted.set(command.name, command);
+        }
+    }
 
-function onMessageReactionAdd(messageReaction, user)
-{
-    //console.log(`${user.username} reacted with "${messageReaction.emoji.name}".`);
-    _reactions.execute(messageReaction, user);
-}
+// =================== EVENTS =======================
 
-function onMessageReactionRemove(messageReaction, user)
-{
-    //console.log(`${user.username} removed the reaction "${messageReaction.emoji.name}".`);
-    _reactions.execute(messageReaction, user);
-}
+    client.on ("ready", onReady);
+    client.on("message", onMessage);
+    client.on("voiceStateUpdate", onVoiceUpdate);
+    client.on("messageReactionAdd", onMessageReactionAdd);
+    client.on("messageReactionRemove", onMessageReactionRemove);
+    client.on("guildBanAdd", onGuildBanAdd);
+    client.on("messageDelete", onMessageDelete);
+    client.on("guildMemberAdd", onGuildMemberAdd);
+    client.on('raw', onRaw);
 
-function onMessageDelete(message)
-{
-    _messageDeleteLog.execute(message);
-}
+// =============== Event Functions ==================
 
-function onGuildBanAdd(guild,user)
-{
-    _guildBanAddLog.execute(guild,user);
-}
+    function onReady()
+    {
+        console.log("Ready!");
+        client.user.setActivity("Konvict Gaming");
+        reloadAllModules();
+    }
 
-client.login (settings.token);
+    async function onMessage(message)                                                                                           // Message handler
+    {
+        // ************* Check message for requirements and setup message **************
+            if (!message.content.startsWith(settings.prefix) || message.author.bot) return;                                     // insure bot doesn't respond to other bots, or its self
+            const args = message.content.slice(settings.prefix.length).split(/ +/);                                             // get args
+            const commandName = args.shift().toLowerCase();                                                                     // first arg is command name
+
+            var command = getCommand(commandName);                                                                              // get command from the first arg
+            if(!command) return;
+
+            var isOwner = false;
+            if (message.author.id == settings.ownerID) isOwner = true;  
+        // ********************** Check Command Properties *****************************
+            // Owner Only
+                if(command.ownerOnly && !isOwner)
+                {
+                    return message.reply("Only the bot owner can use this command!");
+                }
+            
+            // Guild Only
+                if (command.guildOnly && message.channel.type !== 'text')                                                       // Should a message be sent only on a guild channel or can it be sent in a dm?
+                {
+                    return message.reply('I can\'t execute that command inside DMs!');
+                }
+
+            // args & usage
+                if (command.args && !args.length)                                                                               // Check to see if the command requires args and see if any were given
+                {
+                    let reply = `You didn't provide any arguments, ${message.author}!`;
+                    if (command.usage)                                                                                          // If  command has a usage property, reply with the proper usage included
+                    {
+                        reply += `\nThe proper usage would be: \`${settings.prefix}${command.name} ${command.usage}\``;
+                    }
+                    return message.channel.send(reply);
+                }
+
+            // Cooldowns
+                if (!cooldowns.has(command.name))                                                                               // Check to see if the command is already in the cooldown collection, if not create it
+                {
+                    cooldowns.set(command.name, new discord.Collection());
+                }
+
+                const now = Date.now();
+                const timestamps = cooldowns.get(command.name);
+                const cooldownAmount = (command.cooldown || 3) * 1000;
+
+                if (!timestamps.has(message.author.id))                                                                         // check to see if the author's ID is already in the timestamps of the cooldown collection
+                {
+                    timestamps.set(message.author.id, now);
+                    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+                }
+                else 
+                {
+                    const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+
+                    if (now < expirationTime) {
+                        const timeLeft = (expirationTime - now) / 1000;
+                        return message.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+                    }
+
+                    timestamps.set(message.author.id, now);
+                    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+                }
+            
+            // Permissions
+                if(command.requiredRoles && !isOwner)
+                {
+                    var perms = false;
+                    for(role in command.requiredRoles)
+                    {
+                        if (message.member.roles.exists("name", role)) perms = true;
+                    }
+                    if (!perms) return message.reply("You do not have permissions for this command");
+                }
+
+            // Run Commands
+                try
+                {
+                    console.log("Atempting to run command: " + commandName );
+                    command.execute(message, args, client);
+                }
+                catch (error) 
+                {
+                    console.error(error);
+                    message.reply('There was an error trying to execute that command! Please contact an @technician');
+                }
+
+    };
+
+    function onVoiceUpdate(oldMember, newMember)
+    {
+        _dynamicChannels.execute(oldMember, newMember);
+        _modPoke.execute(oldMember, newMember);
+    };
+
+    function onMessageReactionAdd(messageReaction, user)
+    {
+        //console.log(`${user.username} reacted with "${messageReaction.emoji.name}".`);
+        _reactions.execute(messageReaction, user);
+    };
+
+    function onMessageReactionRemove(messageReaction, user)
+    {
+        //console.log(`${user.username} removed the reaction "${messageReaction.emoji.name}".`);
+        _reactions.execute(messageReaction, user);
+    };
+
+    function onMessageDelete(message)
+    {
+        _messageDeleteLog.execute(message);
+    };
+
+    function onGuildBanAdd(guild,user)
+    {
+        _guildBanAddLog.execute(guild,user);
+    };
+
+    function onGuildMemberAdd(guildMember)
+    {
+        const welcome = new discord.RichEmbed()
+            .setColor('#FF0000')
+            .setTitle('__Welcome!__')
+            .setAuthor(guildMember.guild.name, guildMember.guild.iconURL)
+            .setThumbnail(guildMember.guild.iconURL)
+            .setDescription("Welcome to KG! To get started, please read the #start_here channel to gain permissions!")
+            .addField("__Guests:__ ", "Start by choosing sections in the #start_here channel! Feel free to apply at http://www.konvictgaming.com to become a member (members get priority for events and fancy colors)", false)
+            .addField("__Applicants:__ ", "Join the application room under konvict staff to get help from a moderator!", false)
+            .addField("__Current Members:__ ", "Connect your account on the website using this link: https://www.konvictgaming.com/account/external-accounts ", false)
+            .setTimestamp()
+            .setFooter('Questions? Contact a Moderator!');
+
+        guildMember.send(welcome);
+    }
+
+    async function onRaw(event) // so that all events trigger for all messages (reactions)
+    {
+            // console.log(event);
+            if (event.t == 'MESSAGE_REACTION_ADD')
+            {
+                const { d: data } = event;
+                const channel = client.channels.get(data.channel_id);
+        
+                if (channel.messages.has(data.message_id)) return;
+        
+                const user = client.users.get(data.user_id);
+                const message = await channel.fetchMessage(data.message_id);
+        
+                const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+                const reaction = message.reactions.get(emojiKey);
+        
+                client.emit('messageReactionAdd', reaction, user);
+            }
+            else if (event.t == 'MESSAGE_REACTION_REMOVE')
+            {
+                const { d: data } = event;
+                const channel = client.channels.get(data.channel_id);
+        
+                if (channel.messages.has(data.message_id)) return;
+        
+                const user = client.users.get(data.user_id);
+                const message = await channel.fetchMessage(data.message_id);
+        
+                const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+                const reaction = message.reactions.get(emojiKey);
+        
+                client.emit('messageReactionRemove', reaction, user);
+            }
+            else{
+                return;
+            }
+    };
 
 
-// temp ban?
-// tedsystem - temp done for now
-// modmail
-// application
-// accept the Code of conduct
+// ============== Helper Functions ==================
 
-/*
-add section:
-    add name
-    add emoji
-    redo emoji list
-    add role
-    
-*/
+    function getCommand(commandName)
+    {
+        for (mod in client.modules)
+        {
+            if (client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName)))
+            {
+                const command = client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+                return command;
+            }
+        }
+        return undefined;
+    };

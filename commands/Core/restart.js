@@ -1,5 +1,5 @@
 const exec = require('child_process');
-const settings = require('../settings.json');   // THIS FILE NEEDS TO BE IN THE COMMANDS FOLDER!!!!!!!
+const settings = require('../../settings.json');   // THIS FILE NEEDS TO BE IN THE COMMANDS FOLDER!!!!!!!
 
 module.exports = {
     name: 'restart',                   // Command name (same as the file.js name)
@@ -12,7 +12,7 @@ module.exports = {
     execute(message, args) {                // Function Goes Here
         if (!message.member.roles.exists("name", "Technician"))
         {
-            return message.reply("You do not have permission to execute this command! You must be at least a Moderator!")
+            return message.reply("You do not have permission to execute this command! You must be at least a Technician!")
         }
         else
         {
