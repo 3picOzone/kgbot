@@ -18,7 +18,7 @@ module.exports = {
         {
             const embed = new discord.RichEmbed()
                 .setColor('RED')
-                .setTitle('Click on an emoji below to subscribe/unsubscribe to a section')
+                .setTitle('React with/click on an emoji below this message to subscribe/unsubscribe to a section')
                 .setAuthor(message.guild.name, message.guild.iconURL)
                 .setDescription("Possible Sections and their icon associated:")
                 .setTimestamp();
