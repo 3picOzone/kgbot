@@ -241,7 +241,7 @@
             .setTitle('__Welcome!__')
             .setAuthor(guildMember.guild.name, guildMember.guild.iconURL)
             .setThumbnail(guildMember.guild.iconURL)
-            .setDescription("Welcome to KG! To get started, please read the #start_here channel to gain permissions!")
+            .setDescription("Welcome to KG! To get started, please read the #start-here channel to gain permissions!")
             .addField("__Guests:__ ", "Start by choosing sections in the #start_here channel! Feel free to apply at http://www.konvictgaming.com to become a member (members get priority for events and fancy colors)", false)
             .addField("__Applicants:__ ", "Join the application room under konvict staff to get help from a moderator!", false)
             .addField("__Current Members:__ ", "Connect your account on the website using this link: https://www.konvictgaming.com/account/external-accounts ", false)
