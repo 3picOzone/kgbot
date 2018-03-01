@@ -9,6 +9,6 @@ module.exports = {
     args: false,                            // true/false are there any args for this command?
     guildOnly: false,                       // true/false should it only be used in guild channels and not in PM's
     execute(message, args) {        		// Function Goes Here
-        message.channel.send("Here on KG, each game is put into a thing refered to as a 'section'. To view a section please click the emoji for your section at the bottom of the " + message.guild.channels.find("name", "start_here") + " channel!")
+        message.channel.send("Here on KG, each game is put into a thing refered to as a 'section'. To view a section please click the emoji for your section at the bottom of the " + message.guild.channels.find("name", "start-here") + " channel!")
 	},
 };
