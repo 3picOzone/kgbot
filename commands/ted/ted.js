@@ -12,7 +12,7 @@ module.exports = {
         if (message.mentions.members.first() == undefined) return message.reply("You must mention at least one member!");
         
 
-        connection.connect(function(err) {
+        connection.query(function(err) {
             if (err) 
             {
                 console.log(err.stack);
