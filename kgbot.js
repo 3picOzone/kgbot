@@ -18,6 +18,15 @@
         var _messageDeleteLog = require('./logs/messageDeleteLog.js');
         var _guildBanAddLog = require('./logs/guildBanAddLog.js');
 
+    // MYSQL
+        var mysql = require('mysql');
+        var connection = mysql.createConnection({
+            host: settings.dbHost,
+            user: settings.dbUsername,
+            password: settings.dbPassword,
+            database: settings.dbDatabase
+        });
+
 // ================== Modules =======================
 
     client.modules = {}
@@ -192,18 +201,17 @@
                     if (!perms) return message.reply("You do not have permissions for this command");
                 }
 
-            // Run Commands
-                try
-                {
-                    console.log("Atempting to run command: " + commandName );
-                    command.execute(message, args, client);
-                }
-                catch (error) 
-                {
-                    console.error(error);
-                    message.reply('There was an error trying to execute that command! Please contact an @technician');
-                }
-
+        // **************************** Run Commands ***********************************
+            try
+            {
+                console.log("Atempting to run command: " + commandName );
+                command.execute(message, args, client,connection);
+            }
+            catch (error) 
+            {
+                console.error(error);
+                message.reply("There was an error trying to execute `" + commandName + "` Please contact an @technician");
+            }
     };
 
     function onVoiceUpdate(oldMember, newMember)
