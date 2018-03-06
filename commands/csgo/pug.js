@@ -1,7 +1,7 @@
 const settings = require('../../settings.json');   // THIS FILE NEEDS TO BE IN THE COMMANDS FOLDER!!!!!!!
 const discord = require ('discord.js');
 
-const maxPlayers = 2;
+const maxPlayers = 10;
 
 module.exports = {
 	name: 'pug',                   									// Command name (same as the file.js name)
@@ -57,7 +57,8 @@ module.exports = {
             if (args[1] == "all")
             {
                 delete message.client.pug;
-                message.client.pug = new discord.Collection(); 
+                message.client.pug = new discord.Collection();
+                message.reply("Removed all users from the queue!"); 
                 message.guild.channels.find("name", "csgo-pug-coordinator-room" ).send("Removed ALL from the PUG queue!");
             }
             else if (message.mentions.users.first())
