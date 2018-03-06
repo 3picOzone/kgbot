@@ -7,6 +7,8 @@
         client.login (settings.token);
         const cooldowns = new discord.Collection();
 
+    // CSGO PUG
+        client.pug = new discord.Collection();
 
     // Helper Files
         const _permissions = require('./permissions.js');
@@ -38,6 +40,7 @@
         reloadModerationModule();
         reloadAutoRoleModule();
         reloadTedModule();
+        reloadcsgoModule();
     }
 
     function reloadCoreModule()
@@ -102,6 +105,19 @@
         {
             const command = require(`./commands/ted/${file}`);
             client.modules.ted.set(command.name, command);
+        }
+    }
+
+    function reloadcsgoModule()
+    {
+        delete client.modules.csgo;
+        delete csgoFiles;
+        client.modules.csgo = new discord.Collection();
+        const csgoFiles = fs.readdirSync('./commands/csgo');
+        for (const file of csgoFiles)                        // Read commands from the module's folder
+        {
+            const command = require(`./commands/csgo/${file}`);
+            client.modules.csgo.set(command.name, command);
         }
     }
 
