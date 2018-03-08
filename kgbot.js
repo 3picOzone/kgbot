@@ -148,7 +148,7 @@
             const args = message.content.slice(settings.prefix.length).split(/ +/);                                             // get args
             const commandName = args.shift().toLowerCase();                                                                     // first arg is command name
 
-            var command = getCommand(commandName);                                                                              // get command from the first arg
+            const command = await getCommand(commandName);                                                                              // get command from the first arg
             if(!command) return;
 
             var isOwner = false;
@@ -322,7 +322,7 @@
         {
             if (client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName)))
             {
-                const command = client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+                const command = await client.modules[mod].get(commandName) || client.modules[mod].find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
                 return command;
             }
         }
