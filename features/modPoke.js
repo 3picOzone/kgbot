@@ -2,7 +2,7 @@ const settings = require('../settings.json');
 
 module.exports= 
 {
-    execute(oldMember, newMember)
+    async execute(oldMember, newMember)
     {
         if (newMember.voiceChannel !== undefined && newMember.voiceChannel.name.toLowerCase().includes("applica")) 
         {

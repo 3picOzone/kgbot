@@ -2,7 +2,7 @@ const settings = require('../settings.json');
 
 module.exports= 
 {
-    execute(oldMember, newMember)
+    async execute(oldMember, newMember)
     {
         var dynamicToken = settings.dynamicChannelStaffToken;
         var parent;

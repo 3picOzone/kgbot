@@ -3,7 +3,7 @@ module.exports=
     async execute(messageReaction, user)
     {
         if (!messageReaction.me) return;
-        if (user.id == "393666734793424898") return;
+        if (user.id == "393666734793424898" || user.id == "408421721612353539") return;
         if (messageReaction.message.guild.roles.find(r => r.name.toLowerCase() == messageReaction.emoji.name.toLowerCase()) == undefined) return;
         if (messageReaction.message.guild.members.find("id", user.id) == null) return;
         if (messageReaction.message.guild.members.find("id", user.id).roles.find(r => r.name.toLowerCase() == messageReaction.emoji.name.toLowerCase()))
@@ -18,7 +18,7 @@ module.exports=
             messageReaction.message.guild.fetchMember(user)
                 .then(mem => mem.addRole(messageReaction.message.guild.roles.find(r => r.name.toLowerCase() == messageReaction.emoji.name.toLowerCase())))
                 .catch(console.log);
-            user.send("You have been added to the " + messageReaction.emoji + " Role").catch(console.log);
+            user.send("You have been added to the " + messageReaction.emoji + " Role").catch(err => {console.log("could not send message to user")});
         }
     },   
 };      

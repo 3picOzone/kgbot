@@ -7,9 +7,10 @@
         client.login (settings.token);
         const cooldowns = new discord.Collection();
 
+    // CSGO PUG
+        client.pug = new discord.Collection();
 
     // Helper Files
-        const _permissions = require('./permissions.js');
 
     // Features   
         var _modPoke = require("./features/modPoke.js"); 
@@ -38,6 +39,7 @@
         reloadModerationModule();
         reloadAutoRoleModule();
         reloadTedModule();
+        reloadcsgoModule();
     }
 
     function reloadCoreModule()
@@ -102,6 +104,19 @@
         {
             const command = require(`./commands/ted/${file}`);
             client.modules.ted.set(command.name, command);
+        }
+    }
+
+    function reloadcsgoModule()
+    {
+        delete client.modules.csgo;
+        delete csgoFiles;
+        client.modules.csgo = new discord.Collection();
+        const csgoFiles = fs.readdirSync('./commands/csgo');
+        for (const file of csgoFiles)                        // Read commands from the module's folder
+        {
+            const command = require(`./commands/csgo/${file}`);
+            client.modules.csgo.set(command.name, command);
         }
     }
 
@@ -194,7 +209,8 @@
                 if(command.requiredRoles && !isOwner)
                 {
                     var perms = false;
-                    for(role in command.requiredRoles)
+                    if (command.requiredRoles[0] == '' || command.requiredRoles[0] == 'none' ) perms = true;                                           // if array is empty set to true 
+                    for(role of command.requiredRoles)
                     {
                         if (message.member.roles.exists("name", role)) perms = true;
                     }
@@ -205,12 +221,12 @@
             try
             {
                 console.log("Atempting to run command: " + commandName );
-                command.execute(message, args, client,connection);
+                command.execute(message, args, connection);
             }
             catch (error) 
             {
                 console.error(error);
-                message.reply("There was an error trying to execute `" + commandName + "` Please contact an @technician");
+                message.reply("There was an error trying to execute `" + commandName + "` Please contact a " + message.guild.roles.find("name", "Technician"));
             }
     };
 

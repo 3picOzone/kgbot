@@ -4,7 +4,7 @@ const discord = require ('discord.js');
 
 module.exports= 
 {
-    execute(message)
+    async execute(message)
     {
         if(message.author.bot) return;
         const embed = new discord.RichEmbed()
