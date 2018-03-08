@@ -134,7 +134,7 @@
 
 // =============== Event Functions ==================
 
-    function onReady()
+    async function onReady()
     {
         console.log("Ready!");
         client.user.setActivity("Konvict Gaming");
@@ -230,35 +230,35 @@
             }
     };
 
-    function onVoiceUpdate(oldMember, newMember)
+    async function onVoiceUpdate(oldMember, newMember)
     {
         _dynamicChannels.execute(oldMember, newMember);
         _modPoke.execute(oldMember, newMember);
     };
 
-    function onMessageReactionAdd(messageReaction, user)
+    async function onMessageReactionAdd(messageReaction, user)
     {
         //console.log(`${user.username} reacted with "${messageReaction.emoji.name}".`);
         _reactions.execute(messageReaction, user);
     };
 
-    function onMessageReactionRemove(messageReaction, user)
+    async function onMessageReactionRemove(messageReaction, user)
     {
         //console.log(`${user.username} removed the reaction "${messageReaction.emoji.name}".`);
         _reactions.execute(messageReaction, user);
     };
 
-    function onMessageDelete(message)
+    async function onMessageDelete(message)
     {
         _messageDeleteLog.execute(message);
     };
 
-    function onGuildBanAdd(guild,user)
+    async function onGuildBanAdd(guild,user)
     {
         _guildBanAddLog.execute(guild,user);
     };
 
-    function onGuildMemberAdd(guildMember)
+    async function onGuildMemberAdd(guildMember)
     {
         const welcome = new discord.RichEmbed()
             .setColor('#FF0000')
@@ -316,7 +316,7 @@
 
 // ============== Helper Functions ==================
 
-    function getCommand(commandName)
+    async function getCommand(commandName)
     {
         for (mod in client.modules)
         {
