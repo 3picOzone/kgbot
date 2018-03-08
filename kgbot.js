@@ -154,14 +154,20 @@
             var isOwner = false;
             if (message.author.id == settings.ownerID) isOwner = true;  
         // ********************** Check Command Properties *****************************
-            // Disabled
-                if (command.disabled) return message.reply("This command is currently disabled. If you believe this is an error please contact a technician.")      // Should this command be run? (if it is disabled dont run it)  
             // Owner Only
-                if(command.ownerOnly && !isOwner)return message.reply("Only the bot owner can use this command!");                                                  // Should the command only be run by the owner of the bot?            
+                if(command.ownerOnly && !isOwner)
+                {
+                    return message.reply("Only the bot owner can use this command!");
+                }
+            
             // Guild Only
-                if (command.guildOnly && message.channel.type !== 'text') return message.reply('I can\'t execute that command inside DMs!');                        // Should a message be sent only on a guild channel or can it be sent in a dm?
+                if (command.guildOnly && message.channel.type !== 'text')                                                       // Should a message be sent only on a guild channel or can it be sent in a dm?
+                {
+                    return message.reply('I can\'t execute that command inside DMs!');
+                }
+
             // args & usage
-                if (command.args && !args.length)                                                                                                                   // Check to see if the command requires args and see if any were given
+                if (command.args && !args.length)                                                                               // Check to see if the command requires args and see if any were given
                 {
                     let reply = `You didn't provide any arguments, ${message.author}!`;
                     if (command.usage)                                                                                          // If  command has a usage property, reply with the proper usage included
