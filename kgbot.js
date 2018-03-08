@@ -11,7 +11,6 @@
         client.pug = new discord.Collection();
 
     // Helper Files
-        const _permissions = require('./permissions.js');
 
     // Features   
         var _modPoke = require("./features/modPoke.js"); 
@@ -210,7 +209,8 @@
                 if(command.requiredRoles && !isOwner)
                 {
                     var perms = false;
-                    for(role in command.requiredRoles)
+                    if (command.requiredRoles[0] == '' || command.requiredRoles[0] == 'none' ) perms = true;                                           // if array is empty set to true 
+                    for(role of command.requiredRoles)
                     {
                         if (message.member.roles.exists("name", role)) perms = true;
                     }
@@ -221,12 +221,12 @@
             try
             {
                 console.log("Atempting to run command: " + commandName );
-                command.execute(message, args, client,connection);
+                command.execute(message, args, connection);
             }
             catch (error) 
             {
                 console.error(error);
-                message.reply("There was an error trying to execute `" + commandName + "` Please contact an @technician");
+                message.reply("There was an error trying to execute `" + commandName + "` Please contact a " + message.guild.roles.find("name", "Technician"));
             }
     };
 

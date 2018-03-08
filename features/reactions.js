@@ -3,7 +3,7 @@ module.exports=
     async execute(messageReaction, user)
     {
         if (!messageReaction.me) return;
-        if (user.id == "393666734793424898") return;
+        if (user.id == "393666734793424898" || user.id == "408421721612353539") return;
         if (messageReaction.message.guild.roles.find(r => r.name.toLowerCase() == messageReaction.emoji.name.toLowerCase()) == undefined) return;
         if (messageReaction.message.guild.members.find("id", user.id) == null) return;
         if (messageReaction.message.guild.members.find("id", user.id).roles.find(r => r.name.toLowerCase() == messageReaction.emoji.name.toLowerCase()))
