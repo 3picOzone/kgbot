@@ -41,5 +41,8 @@ Thumbs.db
 *.suo
 
 settings.json
+package-lock.json
+package.json
 restart.sh
 node_modules/
+README.md

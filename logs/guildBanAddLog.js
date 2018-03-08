@@ -4,7 +4,7 @@ const discord = require ('discord.js');
 
 module.exports= 
 {
-    execute(guild, user)
+    async execute(guild, user)
     {
         console.log("user banned");
         const embed = new discord.RichEmbed()
