@@ -1,6 +1,8 @@
 const discord = require ('discord.js');
 const settings = require('../../settings.json');   										// THIS FILE NEEDS TO BE IN THE COMMANDS FOLDER!!!!!!!
 
+const maxPlayers = 10;
+
 module.exports = {
 	name: 'pug',                  	 									        		// Command name (same as the file.js name)
 	description: 'All commands related commands',										// info that gets pulled by the help command for a description
@@ -15,7 +17,6 @@ module.exports = {
 	disabled: false,																	// should this command be available to be used
 	async execute(message, args, connection)         									// Function Goes Here
 	{
-        const maxPlayers = 10;
         if (args[0] == "join" || args[0] == "add")
         {
             var target = message.author;
