@@ -18,6 +18,7 @@
         var _reactions = require('./features/reactions.js');
         var _messageDeleteLog = require('./logs/messageDeleteLog.js');
         var _guildBanAddLog = require('./logs/guildBanAddLog.js');
+        var _streamers = require('./features/streamers');
 
     // MYSQL
         var mysql = require('mysql');
@@ -234,17 +235,16 @@
     {
         _dynamicChannels.execute(oldMember, newMember);
         _modPoke.execute(oldMember, newMember);
+        _streamers.execute(oldMember,newMember);
     };
 
     async function onMessageReactionAdd(messageReaction, user)
     {
-        //console.log(`${user.username} reacted with "${messageReaction.emoji.name}".`);
         _reactions.execute(messageReaction, user);
     };
 
     async function onMessageReactionRemove(messageReaction, user)
     {
-        //console.log(`${user.username} removed the reaction "${messageReaction.emoji.name}".`);
         _reactions.execute(messageReaction, user);
     };
 

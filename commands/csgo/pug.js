@@ -17,6 +17,11 @@ module.exports = {
 	disabled: false,																	// should this command be available to be used
 	async execute(message, args, connection)         									// Function Goes Here
 	{
+        if (message.channel.name != "mute-me-bot-spam" && message.channel.name != "mute-me-bot-commands" &&
+            message.channel.name != "mute-bot-testing" && message.channel.name != "csgo-pug-coordinators-room" &&
+            message.channel.name != "mute-me-bot-spam" && message.channel.name != "csgo-mod-room" && 
+            message.channel.name != "looking-for-pug")
+                return message.reply("Please use a proper channel for `" + settings.prefix + "pug` commands");
         if (args[0] == "join" || args[0] == "add")
         {
             var target = message.author;
