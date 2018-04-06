@@ -4,8 +4,8 @@
         const discord = require ('discord.js');
         const settings = require('./settings.json');
         var client = new discord.Client();
-        client.login (settings.token);
         const cooldowns = new discord.Collection();
+        client.login (settings.token);
 
     // CSGO PUG
         client.pug = new discord.Collection();
@@ -13,15 +13,15 @@
     // Helper Files
 
     // Features   
-        var _modPoke = require("./features/modPoke.js"); 
-        var _dynamicChannels = require('./features/dynamicChannels.js');
-        var _reactions = require('./features/reactions.js');
-        var _messageDeleteLog = require('./logs/messageDeleteLog.js');
-        var _guildBanAddLog = require('./logs/guildBanAddLog.js');
-        var _streamers = require('./features/streamers');
+        const _modPoke = require("./features/modPoke.js"); 
+        const _dynamicChannels = require('./features/dynamicChannels.js');
+        const _reactions = require('./features/reactions.js');
+        const _messageDeleteLog = require('./logs/messageDeleteLog.js');
+        const _guildBanAddLog = require('./logs/guildBanAddLog.js');
+        const _streamers = require('./features/streamers');
 
     // MYSQL
-        var mysql = require('mysql');
+        const mysql = require('mysql');
         var connection = mysql.createConnection({
             host: settings.dbHost,
             user: settings.dbUsername,
