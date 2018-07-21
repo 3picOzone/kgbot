@@ -29,7 +29,7 @@ module.exports=
                     }); 
                 }
                 else{                               // has a activity already,update it
-                    newActivity = parseint(result[0].activityVoice) + 1;
+                    newActivity = parseint(result[0].activityVoice, 10) + 1;
                     sql = "UPDATE activity SET activityVoice = '" + newActivity + "'WHERE sectionid = '" + parentChannel.id + "';";
                     connection.query(sql, function (err, results) {
                         if (err)
