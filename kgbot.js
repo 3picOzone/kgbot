@@ -11,14 +11,15 @@
         client.pug = new discord.Collection();
 
     // Helper Files
-
     // Features   
         const _modPoke = require("./features/modPoke.js"); 
         const _dynamicChannels = require('./features/dynamicChannels.js');
         const _reactions = require('./features/reactions.js');
         const _messageDeleteLog = require('./logs/messageDeleteLog.js');
         const _guildBanAddLog = require('./logs/guildBanAddLog.js');
-        const _streamers = require('./features/streamers');
+        const _streamers = require('./features/streamers.js');
+        const _activityMessage = require('./features/activityMessage.js');
+        const _activityVoice = require('./features/activityVoice.js');
 
     // MYSQL
         const mysql = require('mysql');
@@ -229,13 +230,17 @@
                 console.error(error);
                 message.reply("There was an error trying to execute `" + commandName + "` Please contact a " + message.guild.roles.find("name", "Technician"));
             }
+        
+        // run activity
+            _activityMessage.execute(message,connection);
     };
 
     async function onVoiceUpdate(oldMember, newMember)
     {
         _dynamicChannels.execute(oldMember, newMember);
         _modPoke.execute(oldMember, newMember);
-        _streamers.execute(oldMember,newMember);
+        _streamers.execute(oldMember, newMember);
+        _activityVoice.execute(oldMember, newMember,connection);
     };
 
     async function onMessageReactionAdd(messageReaction, user)
