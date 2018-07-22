@@ -46,7 +46,6 @@ module.exports = {
                     i++;
                 }
                 message.channel.send(embed)
-                .then()//do nothing
                 .catch(console.log);
             }
         })
