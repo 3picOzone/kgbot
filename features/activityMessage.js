@@ -4,10 +4,10 @@ module.exports=
 {
     async execute(message, connection)
     {
-        if (message.author.bot) return;
-        if (message.channel.type != 'text') return;
-        if (message.channel.parent == undefined) return;
-        if (message.guild.name == 'Konvict Gaming') return;
+        if (message.author.bot) return console.log("returned, bot");
+        if (message.channel.type != 'text') return console.log("returned, not text");
+        if (message.channel.parent == undefined) return console.log("returned, parent undefined");
+        if (message.guild.name == 'Konvict Gaming') return console.log("returned, not KG");
 
         const parentChannel = message.channel.parent;
         sql = "SELECT * FROM activity WHERE sectionID = "+parentChannel.id;
