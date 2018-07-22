@@ -19,7 +19,7 @@ module.exports=
             }
             if (result[0] == undefined)         // no activity yet
             {
-                sql = "INSERT INTO activity (sectionid, sectionName, activityVoice, activityMessage, activityVoiceTotal, activityMessageTotal) VALUES ('" + parentChannel.id + "', '" + parentChannel.name.replace(/\W/g, '') + "', '1','0','1','0');";
+                sql = "INSERT INTO activity (sectionid, sectionName, activityVoice, activityMessage, totalActivityVoice, totalActivityMessage) VALUES ('" + parentChannel.id + "', '" + parentChannel.name.replace(/\W/g, '') + "', '1','0','1','0');";
                 connection.query(sql, function (err, results) {
                     if (err)
                     {
@@ -31,7 +31,7 @@ module.exports=
             else{                               // has a activity already,update it
                 newActivity = parseInt(result[0].activityMessage, 10) + 1;
                 newActivityTotal = parseInt(result[0].totalActivityMessage, 10) + 1;
-                sql = "UPDATE activity SET activityMessage = '" + newActivity + ", totalActivityMessage = '" + newActivityTotal + "' WHERE sectionid = '" + parentChannel.id + "';";
+                sql = "UPDATE activity SET activityMessage = '" + newActivity + "', totalActivityMessage = '" + newActivityTotal + "' WHERE sectionid = '" + parentChannel.id + "';";
                 connection.query(sql, function (err, results) {
                     if (err)
                     {
