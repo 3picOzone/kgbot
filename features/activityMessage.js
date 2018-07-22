@@ -31,7 +31,7 @@ module.exports=
             else{                               // has a activity already,update it
                 newActivity = parseInt(result[0].activityMessage, 10) + 1;
                 newActivityTotal = parseInt(result[0].totalActivityMessage, 10) + 1;
-                sql = "UPDATE activity SET activityMessage = '" + newActivity + ", activityMessageTotal = '" + newActivityTotal + "' WHERE sectionid = '" + parentChannel.id + "';";
+                sql = "UPDATE activity SET activityMessage = '" + newActivity + ", totalActivityMessage = '" + newActivityTotal + "' WHERE sectionid = '" + parentChannel.id + "';";
                 connection.query(sql, function (err, results) {
                     if (err)
                     {
