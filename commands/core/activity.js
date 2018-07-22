@@ -15,10 +15,10 @@ module.exports = {
 	disabled: false,																	// should this command be available to be used
 	async execute(message, args, connection)         									// Function Goes Here
 	{  
-        
+       var sql; 
         if (args[0] == "list")
         {
-            var sql = "SELECT * FROM activity;"
+            sql = "SELECT * FROM activity;"
         }
         connection.query(sql, function (err, result) 
         {
