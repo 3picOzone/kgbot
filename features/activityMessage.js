@@ -5,7 +5,7 @@ module.exports=
     async execute(message, connection)
     {
         if (message.author.bot) return;
-        if (message.channel.type != text) return;
+        if (message.channel.type != 'text') return;
         if (message.channel.parent == undefined) return;
         if (message.guild.name == 'Konvict Gaming') return;
 
