@@ -42,7 +42,7 @@ module.exports = {
                 var i = 0;
                 while(result[i])
                 {
-                    embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
+                    embed.addField("__" + message.guild.channels.find(result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
                     i++;
                 }
                 message.channel.send(embed)
