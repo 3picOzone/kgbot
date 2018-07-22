@@ -5,7 +5,7 @@ module.exports = {
 	name: 'activity',                  	 									        	// Command name (same as the file.js name)
 	description: 'Get information on section activity',									// info that gets pulled by the help command for a description
 	aliases: ['activities'],  						                					// Optional saiases for the command
-	usage: '[subcommand]',                							        			// For help command or if command was sent wrong
+	usage: '',                          							        			// For help command or if command was sent wrong
 	requiredRoles: ['Technician', 'Officer', 'Clan Leader'],							// an array of role names that are required to run the command or (false || ['']) to disable
 	cooldown: 10,                            											// Optional Cooldown Between Uses (defaults to 3 seconds if none set)
     args: true,                            									    		// true/false are there any args for this command?
@@ -42,7 +42,7 @@ module.exports = {
                 var i = 0;
                 while(result[i])
                 {
-                    embed.addField("__" + message.guild.channels.find(result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
+                    embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
                     i++;
                 }
                 message.channel.send(embed)
