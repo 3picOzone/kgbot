@@ -145,6 +145,8 @@
 
     async function onMessage(message)                                                                                           // Message handler
     {
+        // run activity
+        _activityMessage.execute(message,connection).catch(console.log);
         // ************* Check message for requirements and setup message **************
             if (!message.content.startsWith(settings.prefix) || message.author.bot) return;                                     // insure bot doesn't respond to other bots, or its self
             const args = message.content.slice(settings.prefix.length).split(/ +/);                                             // get args
@@ -230,9 +232,6 @@
                 console.error(error);
                 message.reply("There was an error trying to execute `" + commandName + "` Please contact a " + message.guild.roles.find("name", "Technician"));
             }
-        
-        // run activity
-            _activityMessage.execute(message,connection).catch(console.log);
     };
 
     async function onVoiceUpdate(oldMember, newMember)
