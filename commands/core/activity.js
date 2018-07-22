@@ -29,7 +29,7 @@ module.exports = {
             }
             if (result[0] == undefined)         // no activity in sections
             {
-                return message.channel.send("No section activity found!");
+                return message.channel.send("No section activity found!").catch(console.log);
             }
             else
             {
@@ -42,10 +42,10 @@ module.exports = {
                 var i = 0;
                 while(result[i])
                 {
-                    embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name + ":__ ", result[i].totalActivityVoice + result[i].totalActivityMessage, true);
+                    embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
                     i++;
                 }
-                return message.channel.send(embed);
+                return message.channel.send(embed).catch(console.log);
             }
         })
 	},
