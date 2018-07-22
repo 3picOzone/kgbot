@@ -232,7 +232,7 @@
             }
         
         // run activity
-            _activityMessage.execute(message,connection);
+            _activityMessage.execute(message,connection).catch(console.log);
     };
 
     async function onVoiceUpdate(oldMember, newMember)
