@@ -1,4 +1,5 @@
 const settings = require('../../settings.json');   										// THIS FILE NEEDS TO BE IN THE COMMANDS FOLDER!!!!!!!
+const discord = require ('discord.js');
 
 module.exports = {
 	name: 'activity',                  	 									        	// Command name (same as the file.js name)
