@@ -1,6 +1,6 @@
 module.exports = {
 	name: 'ping',                  	 													// Command name (same as the file.js name)
-	description: "Pong! (test bot's responce time", 									// info that gets pulled by the help command for a description
+	description: "Pong! (test bot's responce time)", 									// info that gets pulled by the help command for a description
 	aliases: [''],  																	// Optional saiases for the command
 	usage: '',                															// For help command or if command was sent wrong
 	requiredRoles: [''],																// an array of role names that are required to run the command or (false || ['']) to disable
