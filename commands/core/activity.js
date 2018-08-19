@@ -55,23 +55,26 @@ module.exports = {
                 {
                     if (args[1] == "all")
                     {
-                        let j = 0;
+                        var j = 0;
                         while(parentIDS[j])
                         {
-                            sql = "SELECT * FROM events WHERE parentid = '" + parentIDS[j] +"';"
+                            let currentid = parentIDS[k];
+                            sql = "SELECT * FROM events WHERE parentid = '" + currentid +"';";
                             connection.query(sql, function (err, result) {
                                 if (err)
                                 {
                                     console.log(err.stack);
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
-                                embed.addField("__" + result[0].parentname + ":__", result.length);
-                                j++;
+                                embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", result.length);
+                                if(embed.fields.length == numParents)
+                                {              
+                                    message.channel.send(embed)
+                                        .catch(console.log);
+                                }
                             }); 
+                            j++;
                         }
-                        console.log(embed);
-                        message.channel.send(embed)
-                            .catch(console.log);
                     }
                     else
                     {
