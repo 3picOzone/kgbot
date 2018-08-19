@@ -85,6 +85,7 @@ module.exports = {
                                 
                                 console.log("parentids: " + parentIDS[0]);
                                 console.log("parentids: " + parentIDS[1]);
+                                console.log(k);
                                 console.log(parentIDS[k]);
                                 console.log(message.guild.channels.get(parentIDS[k]));
                                 // console.log(message.guild.channels.get("'" + parentIDS[i] + "'"));
