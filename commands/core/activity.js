@@ -72,7 +72,7 @@ module.exports = {
                     }
                     else
                     {
-                        let k = 0;
+                        var k = 0;
                         while(parentIDS[k])
                         {
                             sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[k] +"';";
@@ -92,8 +92,8 @@ module.exports = {
                                 // console.log(message.guild.channels.get(parentIDS[i]).name.replace(/\W/g, ''));
                                 //embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", result.length);
                                 
-                                k++;
                             }); 
+                            k++;
                         }
                     }
                 }
