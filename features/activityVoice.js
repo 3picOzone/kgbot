@@ -10,6 +10,9 @@ module.exports=
         if (newMember.voiceChannel !== undefined && newMember.guild.name == 'Konvict Gaming')      //currntly only for KG
         {
             const parentChannel = newMember.voiceChannel.parent;
+
+            activities.execute(newMember, newMember.voiceChannel, connection, "voice");
+
             sql = "SELECT * FROM activity WHERE sectionID = "+parentChannel.id;
             connection.query(sql, function (err, result) {
                 if (err)
