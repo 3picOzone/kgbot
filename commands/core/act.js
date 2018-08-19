@@ -19,42 +19,43 @@ module.exports = {
         var parentIDS;
         var results;
         sql = "SELECT DISTINCT parentid FROM events;";
-        results = queryDB(sql, message, connection);
-        console.log("after function results: " + results);
-        for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
+        queryDB(sql, message, connection).then(results => {
+            console.log("after function results: " + results);
+            for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
 
-        const embed = new discord.RichEmbed()
-            .setColor('RED')
-            .setTitle('Section Activities')
-            .setDescription('Section name and activities:')
-            .setAuthor(message.guild.name, message.guild.iconURL)
-            .setTimestamp();
+            const embed = new discord.RichEmbed()
+                .setColor('RED')
+                .setTitle('Section Activities')
+                .setDescription('Section name and activities:')
+                .setAuthor(message.guild.name, message.guild.iconURL)
+                .setTimestamp();
 
-        if(args[0] == "list")
-        {
-            if(args[1] == "all")
+            if(args[0] == "list")
             {
-                for(let i = 0; parentIDS[i] != undefined; i++)
+                if(args[1] == "all")
                 {
-                    let currentid = parentIDS[i];
-                    sql = "SELECT * FROM events WHERE parentid = '" + currentid +"';";
-                    results = queryDB(sql, message, connection);
-                    addToEmbed(results, currentid, embed);
+                    for(let i = 0; parentIDS[i] != undefined; i++)
+                    {
+                        let currentid = parentIDS[i];
+                        sql = "SELECT * FROM events WHERE parentid = '" + currentid +"';";
+                        results = queryDB(sql, message, connection);
+                        addToEmbed(results, currentid, embed);
+                    }
                 }
-            }
-            else
-            {
-                for(let i = 0; parentIDS[i] != undefined; i++)
+                else
                 {
-                    let currentid = parentIDS[i];
-                    sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + currentid +"';";
-                    results = queryDB(sql, message, connection);
-                    addToEmbed(results, currentid, embed);
+                    for(let i = 0; parentIDS[i] != undefined; i++)
+                    {
+                        let currentid = parentIDS[i];
+                        sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + currentid +"';";
+                        results = queryDB(sql, message, connection);
+                        addToEmbed(results, currentid, embed);
+                    }
                 }
+                message.channel.send(embed)
+                    .catch(console.log);
             }
-            message.channel.send(embed)
-                .catch(console.log);
-        }
+        });
 	},
 };
 
