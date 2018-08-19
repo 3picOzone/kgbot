@@ -1,4 +1,5 @@
 const settings = require('../settings.json');
+const activities = require('./activities.js');
 
 module.exports= 
 {
