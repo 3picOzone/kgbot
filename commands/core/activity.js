@@ -26,83 +26,77 @@ module.exports = {
                 console.log(err.stack);
                 return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
             }
-            
-            test = JSON.stringify(results[0]); 
-            console.log("num parents: " + parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", "")));
             numParents = parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", ""));
-            console.log("test string 1: " + JSON.stringify(results[0])); 
-        });
-        console.log("test string: " + test); 
-        console.log("number of parents: " + numParents)
-        var parentIDS = new Array(numParents);
-        sql = "SELECT DISTINCT parentid FROM events;"
-        connection.query(sql, function (err, results) {
-            if (err)
-            {
-                console.log(err.stack);
-                return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
-            }
-            
-            let i = 0;
-            while(results[i])
-            {
-                console.log(results[i].parentid);
-                parentIDS[i] = results[i].parentid;
-                i++;
-            }
-        });
-
-        console.log(parentIDS);
-
-        const embed = new discord.RichEmbed()
-            .setColor('RED')
-            .setTitle('Section Activities')
-            .setDescription('Section name and activities:')
-            .setAuthor(message.guild.name, message.guild.iconURL)
-            .setTimestamp();
-
-
-        if (args[0] == "list")
-        {
-            if (args[1] == "all")
-            {
-                console.log("all");
-                let i = 0;
-                while(parentIDS[i])
+            console.log("number of parents: " + numParents)
+            var parentIDS = new Array(numParents);
+            sql = "SELECT DISTINCT parentid FROM events;"
+            connection.query(sql, function (err, results) {
+                if (err)
                 {
-                    sql = "SELECT * FROM events WHERE parentid = '" + parentIDS[i] +"';"
-                    connection.query(sql, function (err, results) {
-                        if (err)
-                        {
-                            console.log(err.stack);
-                            return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
-                        }
-                        console.log("attempt add");
-                        embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
-                    }); 
+                    console.log(err.stack);
+                    return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                 }
-            }
-            else
-            {
                 
-                console.log("list");
                 let i = 0;
-                while(parentIDS[i])
+                while(results[i])
                 {
-                    sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NEW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
-                    connection.query(sql, function (err, results) {
-                        if (err)
-                        {
-                            console.log(err.stack);
-                            return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
-                        }
-                        console.log("attempt add2");
-                        embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
-                    }); 
+                    console.log(results[i].parentid);
+                    parentIDS[i] = results[i].parentid;
+                    i++;
+                }
+            });
+
+            console.log(parentIDS);
+
+            const embed = new discord.RichEmbed()
+                .setColor('RED')
+                .setTitle('Section Activities')
+                .setDescription('Section name and activities:')
+                .setAuthor(message.guild.name, message.guild.iconURL)
+                .setTimestamp();
+
+
+            if (args[0] == "list")
+            {
+                if (args[1] == "all")
+                {
+                    console.log("all");
+                    let i = 0;
+                    while(parentIDS[i])
+                    {
+                        sql = "SELECT * FROM events WHERE parentid = '" + parentIDS[i] +"';"
+                        connection.query(sql, function (err, results) {
+                            if (err)
+                            {
+                                console.log(err.stack);
+                                return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
+                            }
+                            console.log("attempt add");
+                            embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
+                        }); 
+                    }
+                }
+                else
+                {
+                    
+                    console.log("list");
+                    let i = 0;
+                    while(parentIDS[i])
+                    {
+                        sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NEW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
+                        connection.query(sql, function (err, results) {
+                            if (err)
+                            {
+                                console.log(err.stack);
+                                return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
+                            }
+                            console.log("attempt add2");
+                            embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
+                        }); 
+                    }
                 }
             }
-        }
-        
+        });
         // connection.query(sql, function (err, result) 
         // {
         //     if (err)
