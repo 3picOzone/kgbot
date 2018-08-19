@@ -38,13 +38,14 @@ module.exports = {
             let i = 0;
             while(results[i])
             {
+                console.log(results[i]);
                 parentIDS.push(results[i]);
                 i++;
             }
         });
 
         console.log(parentIDS);
-        
+
         const embed = new discord.RichEmbed()
             .setColor('RED')
             .setTitle('Section Activities')
