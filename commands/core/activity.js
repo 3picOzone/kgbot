@@ -85,6 +85,7 @@ module.exports = {
                                 }
                                 embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", result.length);
                                 console.log(currentid + ": " + result.length)
+                                console.log(message.guild.channels.get(currentid).name.replace(/\W/g, ''));
                             }); 
                             k++;
                         }
