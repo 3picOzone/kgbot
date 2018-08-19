@@ -60,13 +60,13 @@ module.exports = {
 };
 
 
-function addToEmbed(results, currentid, embed)
+async function addToEmbed(results, currentid, embed)
 {
     embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", results.length, true);
     return embed;
 }
 
-function queryDB(sql, message, connection)
+async function queryDB(sql, message, connection)
 {
     var rows
     connection.query(sql, function (err, rows) {
