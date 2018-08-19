@@ -16,7 +16,7 @@ module.exports = {
 	async execute(message, args, connection)         									// Function Goes Here
 	{  
         var sql; 
-        const numParents;
+        var numParents;
 
         sql = "SELECT COUNT(DISTINCT parentid) FROM events;";
         connection.query(sql, function (err, results) {
