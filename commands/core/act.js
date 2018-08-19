@@ -19,7 +19,7 @@ module.exports = {
         var parentIDS;
         var results;
         sql = "SELECT DISTINCT parentid FROM events;";
-        results = await queryDB(sql, message, connection).then
+        results = await queryDB(sql, message, connection)
         console.log("after function results: " + results);
         for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
 
