@@ -25,6 +25,8 @@ module.exports = {
         //     }
         // }); 
         // const numParents = results[0];
+        
+        var parentIDS = [];
         sql = "SELECT DISTINCT parentid FROM events;"
         connection.query(sql, function (err, results) {
             if (err)
@@ -32,14 +34,14 @@ module.exports = {
                 console.log(err.stack);
                 return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
             }
+            
+            let i = 0;
+            while(results[i])
+            {
+                parentIDS.push(results[i]);
+                i++;
+            }
         });
-        var parentIDS = [];
-        let i = 0;
-        while(results[i])
-        {
-            parentIDS.push(results[i]);
-            i++;
-        }
 
         const embed = new discord.RichEmbed()
             .setColor('RED')
@@ -63,9 +65,8 @@ module.exports = {
                             console.log(err.stack);
                             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                         }
+                        embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
                     }); 
-
-                    embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
                 }
             }
             else
@@ -80,12 +81,10 @@ module.exports = {
                             console.log(err.stack);
                             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                         }
+                        embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
                     }); 
-
-                    embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
                 }
             }
-
         }
         
         // connection.query(sql, function (err, result) 
