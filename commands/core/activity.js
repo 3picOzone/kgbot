@@ -31,7 +31,7 @@ module.exports = {
             console.log("num parents: " + parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", "")));
             numParents = parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", ""));
         });
-        console.log(test); 
+        console.log("test string: " + test); 
         console.log("number of parents: " + numParents)
         var parentIDS = new Array(numParents);
         sql = "SELECT DISTINCT parentid FROM events;"
