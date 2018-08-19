@@ -19,13 +19,13 @@ module.exports = {
         var numParents;
 
         sql = "SELECT COUNT(DISTINCT parentid) FROM events;";
-        connection.query(sql, function (err, results) {
+        connection.query(sql, function (err, results, fields) {
             if (err)
             {
                 console.log(err.stack);
                 return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
             }
-            console.log(results[0].count);
+            console.log(fields);
             console.log(results[0]);
             numParents = results[0];
         }); 
