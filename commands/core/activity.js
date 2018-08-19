@@ -13,7 +13,7 @@ module.exports = {
 	ownerOnly: false,																	// should this command be only used by the bot owner (3pic_Ozone)
 	hidden: true,                                                                       // should this command be hidden from the help menu
 	disabled: false,																	// should this command be available to be used
-	execute(message, args, connection)         									// Function Goes Here
+	async execute(message, args, connection)         									// Function Goes Here
 	{  
         var sql; 
         var numParents;
@@ -83,7 +83,7 @@ module.exports = {
                                     console.log(err.stack);
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
-                                embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", result.length);
+                                await embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", result.length);
                                 console.log(currentid + ": " + result.length)
                                 console.log(message.guild.channels.get(currentid).name.replace(/\W/g, ''));
                                 console.log(embed);
