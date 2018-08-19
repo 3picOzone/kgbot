@@ -8,8 +8,10 @@ module.exports=
         if (message.channel.type != 'text') return;
         if (message.channel.parent == undefined) return;
         if (message.guild.name != 'Konvict Gaming') return;
+        
+        const parentChannel = message.channel.parent;
 
-        sql = "INSERT INTO events (Type, userid, channelid, parentid, parentname) VALUES ('message', '" + message.author.id + "', '" + message.channel.id + "', '" + message.channel.parent.id + "' , '" + parentChannel.name.replace(/\W/g, '') + "');";
+        sql = "INSERT INTO events (Type, userid, channelid, parentid, parentname) VALUES ('message', '" + message.author.id + "', '" + message.channel.id + "', '" + parentChannel.id + "' , '" + parentChannel.name.replace(/\W/g, '') + "');";
         connection.query(sql, function (err, results) {
             if (err)
             {
@@ -18,7 +20,6 @@ module.exports=
             }
         }); 
 
-        const parentChannel = message.channel.parent;
         sql = "SELECT * FROM activity WHERE sectionID = "+parentChannel.id;
         connection.query(sql, function (err, result) {
             if (err)
