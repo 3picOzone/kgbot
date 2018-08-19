@@ -43,6 +43,8 @@ module.exports = {
             }
         });
 
+        console.log(parentIDS);
+        
         const embed = new discord.RichEmbed()
             .setColor('RED')
             .setTitle('Section Activities')
@@ -73,6 +75,8 @@ module.exports = {
             }
             else
             {
+                
+                console.log("list");
                 let i = 0;
                 while(parentIDS[i])
                 {
