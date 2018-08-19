@@ -28,7 +28,7 @@ module.exports = {
             numParents = results[0];
         }); 
         
-        var parentIDS = [];
+        var parentIDS = new Array(numParents);
         sql = "SELECT DISTINCT parentid FROM events;"
         await connection.query(sql, function (err, results) {
             if (err)
@@ -41,8 +41,7 @@ module.exports = {
             while(results[i])
             {
                 console.log(results[i].parentid);
-                parentIDS.push("test");
-                parentIDS.push(results[i].parentid);
+                parentIDS[i] = results[i].parentid;
                 i++;
             }
         });
