@@ -20,7 +20,7 @@ module.exports = {
         var test;
 
         sql = "SELECT COUNT(DISTINCT parentid) FROM events;";
-        connection.query(sql, function (err, results, fields) {
+        await connection.query(sql, function (err, results) {
             if (err)
             {
                 console.log(err.stack);
