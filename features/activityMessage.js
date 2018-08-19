@@ -9,6 +9,15 @@ module.exports=
         if (message.channel.parent == undefined) return;
         if (message.guild.name != 'Konvict Gaming') return;
 
+        sql = "INSERT INTO events (Type, userid, channelid, parentid, parentname) VALUES ('message', '" + message.author.id + "', '" + message.channel.id + "', '" + message.channel.parent.id + "' , '" + parentChannel.name.replace(/\W/g, '') + "');";
+        connection.query(sql, function (err, results) {
+            if (err)
+            {
+                console.log(err.stack);
+                return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to add a message to events table");
+            }
+        }); 
+
         const parentChannel = message.channel.parent;
         sql = "SELECT * FROM activity WHERE sectionID = "+parentChannel.id;
         connection.query(sql, function (err, result) {
