@@ -55,6 +55,7 @@ module.exports = {
         {
             if (args[1] == "all")
             {
+                console.log("all");
                 let i = 0;
                 while(parentIDS[i])
                 {
@@ -65,6 +66,7 @@ module.exports = {
                             console.log(err.stack);
                             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                         }
+                        console.log("attempt add");
                         embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
                     }); 
                 }
@@ -81,6 +83,7 @@ module.exports = {
                             console.log(err.stack);
                             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                         }
+                        console.log("attempt add2");
                         embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
                     }); 
                 }
