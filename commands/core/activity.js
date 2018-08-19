@@ -17,6 +17,7 @@ module.exports = {
 	{  
         var sql; 
         var numParents;
+        var test;
 
         sql = "SELECT COUNT(DISTINCT parentid) FROM events;";
         connection.query(sql, function (err, results, fields) {
@@ -25,10 +26,12 @@ module.exports = {
                 console.log(err.stack);
                 return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
             }
+            
+            test = parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", "")); 
             console.log("num parents: " + parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", "")));
             numParents = parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", ""));
         });
-        console.log("num of parents: " + parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", ""))); 
+        console.log(test); 
         console.log("number of parents: " + numParents)
         var parentIDS = new Array(numParents);
         sql = "SELECT DISTINCT parentid FROM events;"
