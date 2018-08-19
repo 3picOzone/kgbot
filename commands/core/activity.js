@@ -47,7 +47,7 @@ module.exports = {
             }
         });
 
-        console.log("id array:" + parentIDS);
+        console.log(parentIDS);
 
         const embed = new discord.RichEmbed()
             .setColor('RED')
