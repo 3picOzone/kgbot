@@ -20,6 +20,7 @@ module.exports = {
         var results;
         sql = "SELECT DISTINCT parentid FROM events;";
         results = await queryDB(sql, message, connection);
+        console.log("after function results: " + results);
         for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
 
         const embed = new discord.RichEmbed()
@@ -72,6 +73,7 @@ async function queryDB(sql, message, connection)
             console.log(err.stack);
             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
         }
+        console.log("in function results: " + results);
         return result
     });
 }
