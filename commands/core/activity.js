@@ -83,7 +83,7 @@ module.exports = {
                                     console.log(err.stack);
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
-                                embed.addField("__" + result[0].parentname + ":__", result.length);
+                                embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", result.length);
                                 console.log(currentid + ": " + result.length)
                             }); 
                             k++;
