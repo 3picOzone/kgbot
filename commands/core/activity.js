@@ -65,7 +65,7 @@ module.exports = {
                                     console.log(err.stack);
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
-                                embed.addField("__" + message.guild.channels.find('id', parentIDS[j]).name.replace(/\W/g, '') + ":__", result.length);
+                                embed.addField("__" + result[0].parentname + ":__", result.length);
                                 j++;
                             }); 
                         }
@@ -83,15 +83,7 @@ module.exports = {
                                     console.log(err.stack);
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
-                                
-                                // console.log("parentids: " + parentIDS[0]);
-                                // console.log("parentids: " + parentIDS[1]);
-                                // console.log(k);
-                                // console.log(parentIDS[k]);
-                                // console.log(message.guild.channels.get(parentIDS[k]));
-                                // console.log(message.guild.channels.get("'" + parentIDS[i] + "'"));
-                                // console.log(message.guild.channels.get(parentIDS[i]).name.replace(/\W/g, ''));
-                                //embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", result.length);
+                                embed.addField("__" + result[0].parentname + ":__", result.length);
                             }); 
                             k++;
                         }
