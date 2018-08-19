@@ -13,13 +13,13 @@ module.exports = {
 	ownerOnly: true,																	// should this command be only used by the bot owner (3pic_Ozone)
 	hidden: true,                                                                       // should this command be hidden from the help menu
 	disabled: false,																	// should this command be available to be used
-    async execute(message, args, connection)         									// Function Goes Here
+    execute(message, args, connection)         					        				// Function Goes Here
 	{  
         var sql;
         var parentIDS;
         var results;
         sql = "SELECT DISTINCT parentid FROM events;";
-        results = await queryDB(sql, message, connection);
+        results = queryDB(sql, message, connection);
         console.log("after function results: " + results);
         for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
 
@@ -38,8 +38,8 @@ module.exports = {
                 {
                     let currentid = parentIDS[i];
                     sql = "SELECT * FROM events WHERE parentid = '" + currentid +"';";
-                    results = await queryDB(sql, message, connection);
-                    await addToEmbed(results, currentid, embed);
+                    results = queryDB(sql, message, connection);
+                    addToEmbed(results, currentid, embed);
                 }
             }
             else
@@ -48,8 +48,8 @@ module.exports = {
                 {
                     let currentid = parentIDS[i];
                     sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + currentid +"';";
-                    results = await queryDB(sql, message, connection);
-                    await addToEmbed(results, currentid, embed);
+                    results = queryDB(sql, message, connection);
+                    addToEmbed(results, currentid, embed);
                 }
             }
             message.channel.send(embed)
@@ -59,13 +59,13 @@ module.exports = {
 };
 
 
-async function addToEmbed(results, currentid, embed)
+function addToEmbed(results, currentid, embed)
 {
     embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", results.length, true);
     return embed;
 }
 
-async function queryDB(sql, message, connection)
+function queryDB(sql, message, connection)
 {
     var rows
     connection.query(sql, function (err, rows) {
