@@ -55,29 +55,27 @@ module.exports = {
                 {
                     if (args[1] == "all")
                     {
-                        let i = 0;
-                        while(parentIDS[i])
+                        let j = 0;
+                        while(parentIDS[j])
                         {
-                            sql = "SELECT * FROM events WHERE parentid = '" + parentIDS[i] +"';"
+                            sql = "SELECT * FROM events WHERE parentid = '" + parentIDS[j] +"';"
                             connection.query(sql, function (err, result) {
                                 if (err)
                                 {
                                     console.log(err.stack);
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
-                                embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", result.length);
+                                embed.addField("__" + message.guild.channels.find('id', parentIDS[j]).name.replace(/\W/g, '') + ":__", result.length);
                                 i++;
                             }); 
                         }
                     }
                     else
                     {
-                        let i = 0;
-                        console.log("parentids: " + parentIDS[0]);
-                        console.log("parentids: " + parentIDS[1]);
-                        while(parentIDS[i])
+                        let k = 0;
+                        while(parentIDS[k])
                         {
-                            sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
+                            sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[k] +"';";
                             connection.query(sql, function (err, result) {
                                 if (err)
                                 {
@@ -85,8 +83,10 @@ module.exports = {
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
                                 
-                                console.log(parentIDS[i]);
-                                console.log(message.guild.channels.get(parentIDS[i]));
+                                console.log("parentids: " + parentIDS[0]);
+                                console.log("parentids: " + parentIDS[1]);
+                                console.log(parentIDS[k]);
+                                console.log(message.guild.channels.get(parentIDS[k]));
                                 // console.log(message.guild.channels.get("'" + parentIDS[i] + "'"));
                                 // console.log(message.guild.channels.get(parentIDS[i]).name.replace(/\W/g, ''));
                                 //embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", result.length);
