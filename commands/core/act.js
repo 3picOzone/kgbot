@@ -13,49 +13,48 @@ module.exports = {
 	ownerOnly: true,																	// should this command be only used by the bot owner (3pic_Ozone)
 	hidden: true,                                                                       // should this command be hidden from the help menu
 	disabled: false,																	// should this command be available to be used
-    execute(message, args, connection)         					        				// Function Goes Here
+    async execute(message, args, connection)         					        				// Function Goes Here
 	{  
         var sql;
         var parentIDS;
         var results;
         sql = "SELECT DISTINCT parentid FROM events;";
-        queryDB(sql, message, connection).then(results => {
-            console.log("after function results: " + results);
-            for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
+        results = await queryDB(sql, message, connection).then
+        console.log("after function results: " + results);
+        for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
 
-            const embed = new discord.RichEmbed()
-                .setColor('RED')
-                .setTitle('Section Activities')
-                .setDescription('Section name and activities:')
-                .setAuthor(message.guild.name, message.guild.iconURL)
-                .setTimestamp();
+        const embed = new discord.RichEmbed()
+            .setColor('RED')
+            .setTitle('Section Activities')
+            .setDescription('Section name and activities:')
+            .setAuthor(message.guild.name, message.guild.iconURL)
+            .setTimestamp();
 
-            if(args[0] == "list")
+        if(args[0] == "list")
+        {
+            if(args[1] == "all")
             {
-                if(args[1] == "all")
+                for(let i = 0; parentIDS[i] != undefined; i++)
                 {
-                    for(let i = 0; parentIDS[i] != undefined; i++)
-                    {
-                        let currentid = parentIDS[i];
-                        sql = "SELECT * FROM events WHERE parentid = '" + currentid +"';";
-                        results = queryDB(sql, message, connection);
-                        addToEmbed(results, currentid, embed);
-                    }
+                    let currentid = parentIDS[i];
+                    sql = "SELECT * FROM events WHERE parentid = '" + currentid +"';";
+                    results = await queryDB(sql, message, connection);
+                    await addToEmbed(results, currentid, embed);
                 }
-                else
-                {
-                    for(let i = 0; parentIDS[i] != undefined; i++)
-                    {
-                        let currentid = parentIDS[i];
-                        sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + currentid +"';";
-                        results = queryDB(sql, message, connection);
-                        addToEmbed(results, currentid, embed);
-                    }
-                }
-                message.channel.send(embed)
-                    .catch(console.log);
             }
-        });
+            else
+            {
+                for(let i = 0; parentIDS[i] != undefined; i++)
+                {
+                    let currentid = parentIDS[i];
+                    sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + currentid +"';";
+                    results = await queryDB(sql, message, connection);
+                    await addToEmbed(results, currentid, embed);
+                }
+            }
+            message.channel.send(embed)
+                .catch(console.log);
+        }
 	},
 };
 
@@ -63,7 +62,7 @@ module.exports = {
 async function addToEmbed(results, currentid, embed)
 {
     embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", results.length, true);
-    return embed;
+    return Promise.resolve(embed);
 }
 
 async function queryDB(sql, message, connection)
@@ -76,6 +75,6 @@ async function queryDB(sql, message, connection)
             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
         }
         console.log("in function results: " + rows);
-        return rows
+        return Promise.resolve(rows);
     });
 }
