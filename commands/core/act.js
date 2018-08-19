@@ -2,6 +2,13 @@ const settings = require('../../settings.json');   										// THIS FILE NEEDS 
 const discord = require ('discord.js');
 
 var parentIDS;
+const embed = new discord.RichEmbed()
+    .setColor('RED')
+    .setTitle('Section Activities')
+    .setDescription('Section name and activities:')
+    .setAuthor(message.guild.name, message.guild.iconURL)
+    .setTimestamp();
+var currentid;
 
 module.exports = {
 	name: 'act',                  	 									        	    // Command name (same as the file.js name)
@@ -21,48 +28,8 @@ module.exports = {
         var results;
         sql = "SELECT DISTINCT parentid FROM events;";
         await queryDB(sql, message, connection, "ids");
-
-        const embed = new discord.RichEmbed()
-            .setColor('RED')
-            .setTitle('Section Activities')
-            .setDescription('Section name and activities:')
-            .setAuthor(message.guild.name, message.guild.iconURL)
-            .setTimestamp();
-
-        if(args[0] == "list")
-        {
-            if(args[1] == "all")
-            {
-                for(let i = 0; parentIDS[i] != undefined; i++)
-                {
-                    let currentid = parentIDS[i];
-                    sql = "SELECT * FROM events WHERE parentid = '" + currentid +"';";
-                    results = await queryDB(sql, message, connection);
-                    await addToEmbed(results, currentid, embed);
-                }
-            }
-            else
-            {
-                for(let i = 0; parentIDS[i] != undefined; i++)
-                {
-                    let currentid = parentIDS[i];
-                    sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + currentid +"';";
-                    results = await queryDB(sql, message, connection);
-                    await addToEmbed(results, currentid, embed);
-                }
-            }
-            message.channel.send(embed)
-                .catch(console.log);
-        }
 	},
 };
-
-
-async function addToEmbed(results, currentid, embed)
-{
-    embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", results.length, true);
-    return;
-}
 
 async function queryDB(sql, message, connection, arg)
 {
@@ -74,11 +41,45 @@ async function queryDB(sql, message, connection, arg)
             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
         }
         if(arg == "ids") placeIDS(rows);
+        if(arg == "add") addToEmbed(rows, currentid, embed)
         return;
     });
+}
+
+async function addToEmbed(results, currentid, embed)
+{
+    embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", results.length, true);
+    return;
 }
 
 async function placeIDS(results)
 {
     for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
+    return args();
+}
+
+async function args()
+{
+    if(args[0] == "list")
+    {
+        if(args[1] == "all")
+        {
+            for(let i = 0; parentIDS[i] != undefined; i++)
+            {
+                currentid = parentIDS[i];
+                sql = "SELECT * FROM events WHERE parentid = '" + currentid +"';";
+                var results = await queryDB(sql, message, connection, "add");
+            }
+        }
+        else
+        {
+            for(let i = 0; parentIDS[i] != undefined; i++)
+            {
+                currentid = parentIDS[i];
+                sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + currentid +"';";
+                var results = await queryDB(sql, message, connection, "add");
+            }
+        }
+    }
+    return;
 }
