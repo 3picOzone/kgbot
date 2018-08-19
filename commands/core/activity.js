@@ -30,6 +30,7 @@ module.exports = {
             test = results[0]; 
             console.log("num parents: " + parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", "")));
             numParents = parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", ""));
+            console.log("test string 1: " + test); 
         });
         console.log("test string: " + test); 
         console.log("number of parents: " + numParents)
