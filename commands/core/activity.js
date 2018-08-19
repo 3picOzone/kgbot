@@ -58,7 +58,7 @@ module.exports = {
                         var j = 0;
                         while(parentIDS[j])
                         {
-                            let currentid = parentIDS[k];
+                            let currentid = parentIDS[j];
                             sql = "SELECT * FROM events WHERE parentid = '" + currentid +"';";
                             connection.query(sql, function (err, result) {
                                 if (err)
