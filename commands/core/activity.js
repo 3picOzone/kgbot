@@ -13,14 +13,14 @@ module.exports = {
 	ownerOnly: false,																	// should this command be only used by the bot owner (3pic_Ozone)
 	hidden: true,                                                                       // should this command be hidden from the help menu
 	disabled: false,																	// should this command be available to be used
-	async execute(message, args, connection)         									// Function Goes Here
+	execute(message, args, connection)         									// Function Goes Here
 	{  
         var sql; 
         var numParents;
         var test;
 
         sql = "SELECT COUNT(DISTINCT parentid) FROM events;";
-        await connection.query(sql, function (err, results) {
+        connection.query(sql, function (err, results) {
             if (err)
             {
                 console.log(err.stack);
@@ -36,7 +36,7 @@ module.exports = {
         console.log("number of parents: " + numParents)
         var parentIDS = new Array(numParents);
         sql = "SELECT DISTINCT parentid FROM events;"
-        await connection.query(sql, function (err, results) {
+        connection.query(sql, function (err, results) {
             if (err)
             {
                 console.log(err.stack);
