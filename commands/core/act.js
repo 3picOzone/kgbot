@@ -61,19 +61,20 @@ module.exports = {
 
 async function addToEmbed(results, currentid, embed)
 {
-    embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", result.length, true);
+    embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", results.length, true);
     return embed;
 }
 
 async function queryDB(sql, message, connection)
 {
-    connection.query(sql, function (err, result) {
+    var rows
+    connection.query(sql, function (err, rows) {
         if (err)
         {
             console.log(err.stack);
             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
         }
-        console.log("in function results: " + results);
-        return result
+        console.log("in function results: " + rows);
+        return rows
     });
 }
