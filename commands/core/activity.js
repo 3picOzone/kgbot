@@ -28,7 +28,7 @@ module.exports = {
         
         var parentIDS = [];
         sql = "SELECT DISTINCT parentid FROM events;"
-        connection.query(sql, function (err, results) {
+        await connection.query(sql, function (err, results) {
             if (err)
             {
                 console.log(err.stack);
@@ -63,7 +63,7 @@ module.exports = {
                 while(parentIDS[i])
                 {
                     sql = "SELECT * FROM events WHERE parentid = '" + parentIDS[i] +"';"
-                    connection.query(sql, function (err, results) {
+                    await connection.query(sql, function (err, results) {
                         if (err)
                         {
                             console.log(err.stack);
@@ -82,7 +82,7 @@ module.exports = {
                 while(parentIDS[i])
                 {
                     sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NEW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
-                    connection.query(sql, function (err, results) {
+                    await connection.query(sql, function (err, results) {
                         if (err)
                         {
                             console.log(err.stack);
