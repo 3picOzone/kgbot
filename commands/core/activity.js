@@ -75,6 +75,7 @@ module.exports = {
                         var k = 0;
                         while(parentIDS[k])
                         {
+                            console.log(parentIDS[k]);
                             sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[k] +"';";
                             connection.query(sql, function (err, result) {
                                 if (err)
@@ -83,16 +84,16 @@ module.exports = {
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
                                 
-                                console.log("parentids: " + parentIDS[0]);
-                                console.log("parentids: " + parentIDS[1]);
-                                console.log(k);
-                                console.log(parentIDS[k]);
-                                console.log(message.guild.channels.get(parentIDS[k]));
+                                // console.log("parentids: " + parentIDS[0]);
+                                // console.log("parentids: " + parentIDS[1]);
+                                // console.log(k);
+                                // console.log(parentIDS[k]);
+                                // console.log(message.guild.channels.get(parentIDS[k]));
                                 // console.log(message.guild.channels.get("'" + parentIDS[i] + "'"));
                                 // console.log(message.guild.channels.get(parentIDS[i]).name.replace(/\W/g, ''));
                                 //embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", result.length);
-                                k++;
                             }); 
+                            k++;
                         }
                     }
                 }
