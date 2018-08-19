@@ -4,7 +4,7 @@ const discord = require ('discord.js');
 module.exports = {
 	name: 'activity',                  	 									        	// Command name (same as the file.js name)
 	description: 'Get information on section activity',									// info that gets pulled by the help command for a description
-	aliases: ['activities'],  						                					// Optional saiases for the command
+	aliases: ['activities','a'],  						                					// Optional saiases for the command
 	usage: '',                          							        			// For help command or if command was sent wrong
 	requiredRoles: ['Technician', 'Officer', 'Clan Leader'],							// an array of role names that are required to run the command or (false || ['']) to disable
 	cooldown: 10,                            											// Optional Cooldown Between Uses (defaults to 3 seconds if none set)
@@ -13,7 +13,7 @@ module.exports = {
 	ownerOnly: false,																	// should this command be only used by the bot owner (3pic_Ozone)
 	hidden: true,                                                                       // should this command be hidden from the help menu
 	disabled: false,																	// should this command be available to be used
-    execute(message, args, connection)         									// Function Goes Here
+    execute(message, args, connection)         									        // Function Goes Here
 	{  
         var sql; 
         var numParents;
