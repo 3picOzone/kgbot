@@ -73,7 +73,8 @@ module.exports = {
                     else
                     {
                         let i = 0;
-                        console.log("parentids: " + parentIDS);
+                        console.log("parentids: " + parentIDS[0]);
+                        console.log("parentids: " + parentIDS[1]);
                         while(parentIDS[i])
                         {
                             sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
