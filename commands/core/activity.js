@@ -28,7 +28,7 @@ module.exports = {
             numParents = results[0];
         }); 
         
-        var parentIDS = [];
+        var parentIDS = ["test"];
         sql = "SELECT DISTINCT parentid FROM events;"
         await connection.query(sql, function (err, results) {
             if (err)
