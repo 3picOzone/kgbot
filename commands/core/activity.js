@@ -16,15 +16,17 @@ module.exports = {
 	async execute(message, args, connection)         									// Function Goes Here
 	{  
         var sql; 
-        // sql = "SELECT COUNT(DISTINCT parentid) FROM events;";
-        // connection.query(sql, function (err, results) {
-        //     if (err)
-        //     {
-        //         console.log(err.stack);
-        //         return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
-        //     }
-        // }); 
-        // const numParents = results[0];
+        const numParents;
+
+        sql = "SELECT COUNT(DISTINCT parentid) FROM events;";
+        connection.query(sql, function (err, results) {
+            if (err)
+            {
+                console.log(err.stack);
+                return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
+            }
+            numParents = results[0];
+        }); 
         
         var parentIDS = [];
         sql = "SELECT DISTINCT parentid FROM events;"
@@ -45,7 +47,7 @@ module.exports = {
             }
         });
 
-        console.log(parentIDS);
+        console.log("id array:" + parentIDS);
 
         const embed = new discord.RichEmbed()
             .setColor('RED')
