@@ -87,13 +87,14 @@ module.exports = {
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
                                 embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", result.length);
+                                if(!parentIDS[k+1])
+                                {              
+                                    message.channel.send(embed)
+                                    .catch(console.log);
+                                }
                             }); 
                             k++;
-                            console.log(embed);
                         }
-                        console.log("total embed" + embed);
-                        message.channel.send(embed)
-                            .catch(console.log);
                     }
                 }
                 // connection.query(sql, function (err, result) 
