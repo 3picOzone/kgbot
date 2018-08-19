@@ -11,43 +11,112 @@ module.exports = {
     args: true,                            									    		// true/false are there any args for this command?
 	guildOnly: true,                       										    	// true/false should it only be used in guild channels and not in PM's
 	ownerOnly: false,																	// should this command be only used by the bot owner (3pic_Ozone)
-	hidden: true,                                                                      // should this command be hidden from the help menu
+	hidden: true,                                                                       // should this command be hidden from the help menu
 	disabled: false,																	// should this command be available to be used
 	async execute(message, args, connection)         									// Function Goes Here
 	{  
-       var sql; 
-        if (args[0] == "list")
-        {
-            sql = "SELECT * FROM activity;"
-        }
-        connection.query(sql, function (err, result) 
-        {
+        var sql; 
+        // sql = "SELECT COUNT(DISTINCT parentid) FROM events;";
+        // connection.query(sql, function (err, results) {
+        //     if (err)
+        //     {
+        //         console.log(err.stack);
+        //         return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
+        //     }
+        // }); 
+        // const numParents = results[0];
+        sql = "SELECT DISTINCT parentid FROM events;"
+        connection.query(sql, function (err, results) {
             if (err)
             {
                 console.log(err.stack);
-                return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to list activities!");
+                return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
             }
-            if (result[0] == undefined)         // no activity in sections
+        });
+        var parentIDS = [];
+        let i = 0;
+        while(results[i])
+        {
+            parentIDS.push(results[i]);
+            i++;
+        }
+
+        const embed = new discord.RichEmbed()
+            .setColor('RED')
+            .setTitle('Section Activities')
+            .setDescription('Section name and activities:')
+            .setAuthor(message.guild.name, message.guild.iconURL)
+            .setTimestamp();
+
+
+        if (args[0] == "list")
+        {
+            if (args[1] == "all")
             {
-                return message.channel.send("No section activity found!").catch(console.log);
+                let i = 0;
+                while(parentIDS[i])
+                {
+                    sql = "SELECT * FROM events WHERE parentid = '" + parentIDS[i] +"';"
+                    connection.query(sql, function (err, results) {
+                        if (err)
+                        {
+                            console.log(err.stack);
+                            return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
+                        }
+                    }); 
+
+                    embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
+                }
             }
             else
             {
-                const embed = new discord.RichEmbed()
-                    .setColor('RED')
-                    .setTitle('Section Activities')
-                    .setDescription('Section name and total activities:')
-                    .setAuthor(message.guild.name, message.guild.iconURL)
-                    .setTimestamp();
-                var i = 0;
-                while(result[i])
+                let i = 0;
+                while(parentIDS[i])
                 {
-                    embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
-                    i++;
+                    sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NEW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
+                    connection.query(sql, function (err, results) {
+                        if (err)
+                        {
+                            console.log(err.stack);
+                            return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
+                        }
+                    }); 
+
+                    embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
                 }
-                message.channel.send(embed)
-                .catch(console.log);
             }
-        })
+
+        }
+        
+        // connection.query(sql, function (err, result) 
+        // {
+        //     if (err)
+        //     {
+        //         console.log(err.stack);
+        //         return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to list activities!");
+        //     }
+        //     if (result[0] == undefined)         // no activity in sections
+        //     {
+        //         return message.channel.send("No section activity found!").catch(console.log);
+        //     }
+        //     else
+        //     {
+        //         // const embed = new discord.RichEmbed()
+        //         //     .setColor('RED')
+        //         //     .setTitle('Section Activities')
+        //         //     .setDescription('Section name and total activities:')
+        //         //     .setAuthor(message.guild.name, message.guild.iconURL)
+        //         //     .setTimestamp();
+        //         var i = 0;
+        //         while(result[i])
+        //         {
+        //             embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
+        //             i++;
+        //         }
+
+        //     }
+        // })
+        message.channel.send(embed)
+            .catch(console.log);
 	},
 };
