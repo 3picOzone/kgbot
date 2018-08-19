@@ -96,7 +96,6 @@ module.exports = {
                     }
                 }
             }
-        });
         // connection.query(sql, function (err, result) 
         // {
         //     if (err)
@@ -125,7 +124,9 @@ module.exports = {
 
         //     }
         // })
-        message.channel.send(embed)
-            .catch(console.log);
+            message.channel.send(embed)
+                .catch(console.log);
+                
+        });
 	},
 };
