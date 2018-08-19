@@ -39,6 +39,7 @@ module.exports = {
             while(results[i])
             {
                 console.log(results[i].parentid);
+                parentIDS.push("test");
                 parentIDS.push(results[i].parentid);
                 i++;
             }
