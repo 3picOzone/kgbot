@@ -118,6 +118,7 @@ module.exports = {
 
             //     }
             // })
+                console.log("attempt to send");
                 message.channel.send(embed)
                     .catch(console.log);
             
