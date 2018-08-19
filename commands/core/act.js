@@ -6,7 +6,6 @@ const embed = new discord.RichEmbed()
     .setColor('RED')
     .setTitle('Section Activities')
     .setDescription('Section name and activities:')
-    .setAuthor(message.guild.name, message.guild.iconURL)
     .setTimestamp();
 var currentid;
 
@@ -24,6 +23,7 @@ module.exports = {
 	disabled: false,																	// should this command be available to be used
     async execute(message, args, connection)         					        				// Function Goes Here
 	{  
+        embed.setAuthor(message.guild.name, message.guild.iconURL)
         var sql;
         var results;
         sql = "SELECT DISTINCT parentid FROM events;";
