@@ -69,6 +69,9 @@ module.exports = {
                                 j++;
                             }); 
                         }
+                        console.log(embed);
+                        message.channel.send(embed)
+                            .catch(console.log);
                     }
                     else
                     {
@@ -84,12 +87,11 @@ module.exports = {
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
                                 await embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", result.length);
-                                console.log(currentid + ": " + result.length)
-                                console.log(message.guild.channels.get(currentid).name.replace(/\W/g, ''));
-                                console.log(embed);
                             }); 
                             k++;
                         }
+                        message.channel.send(embed)
+                            .catch(console.log);
                     }
                 }
                 // connection.query(sql, function (err, result) 
@@ -119,11 +121,7 @@ module.exports = {
                 //         }
 
                 //     }
-                // })
-                console.log(embed);
-                message.channel.send(embed)
-                    .catch(console.log);
-            
+                // })            
             });        
         });
 	},
