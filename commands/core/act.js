@@ -73,7 +73,7 @@ async function queryDB(sql, message, connection, arg)
             console.log(err.stack);
             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
         }
-        if(arg == "ids") await placeIDS(rows);
+        if(arg == "ids") placeIDS(rows);
         return;
     });
 }
