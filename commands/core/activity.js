@@ -76,7 +76,7 @@ module.exports = {
                         let i = 0;
                         while(parentIDS[i])
                         {
-                            sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NEW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
+                            sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
                             connection.query(sql, function (err, results) {
                                 if (err)
                                 {
