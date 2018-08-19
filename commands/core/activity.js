@@ -73,7 +73,7 @@ module.exports = {
                     else
                     {
                         let i = 0;
-                        console.log(parentIDS);
+                        console.log("parentids: " + parentIDS);
                         while(parentIDS[i])
                         {
                             sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
@@ -123,7 +123,7 @@ module.exports = {
             //     }
             // })
                 message.channel.send(embed)
-                    .catch(console.log("ERROR SENDING"));
+                    .catch(console.log);
             
             });        
         });
