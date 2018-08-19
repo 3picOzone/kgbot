@@ -38,8 +38,7 @@ module.exports = {
             let i = 0;
             while(results[i])
             {
-                console.log(results[i].parentid);
-                parentIDS.push(results[i]);
+                parentIDS.push(results[i].parentid);
                 i++;
             }
         });
