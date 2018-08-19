@@ -25,7 +25,7 @@ module.exports = {
                 console.log(err.stack);
                 return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
             }
-            console.log(results[0][1]);
+            console.log(results[0].count);
             numParents = results[0];
         }); 
         console.log("number of parents: " + numParents)
