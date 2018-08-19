@@ -119,8 +119,9 @@ module.exports = {
             //     }
             // })
                 console.log("attempt to send");
+                console.log(embed);
                 message.channel.send(embed)
-                    .catch(console.log);
+                    .catch(console.log("ERROR SENDING"));
             
             });        
         });
