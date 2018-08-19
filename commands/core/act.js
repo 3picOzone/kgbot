@@ -40,7 +40,7 @@ async function queryDB(sql, message, connection, arg)
             console.log(err.stack);
             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
         }
-        if(arg == "ids") placeIDS(rows);
+        if(arg == "ids") placeIDS(rows, message);
         if(arg == "add") addToEmbed(rows, currentid, embed)
         return;
     });
@@ -52,13 +52,13 @@ async function addToEmbed(results, currentid, embed)
     return;
 }
 
-async function placeIDS(results)
+async function placeIDS(results, message)
 {
     for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
-    return args();
+    return args(message);
 }
 
-async function args()
+async function args(message)
 {
     if(args[0] == "list")
     {
