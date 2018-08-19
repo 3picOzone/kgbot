@@ -19,8 +19,7 @@ module.exports = {
         var parentIDS;
         var results;
         sql = "SELECT DISTINCT parentid FROM events;";
-
-        results = await queryDB(sql, message, commection);
+        results = await queryDB(sql, message, connection);
         for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
 
         const embed = new discord.RichEmbed()
