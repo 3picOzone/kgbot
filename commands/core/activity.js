@@ -91,34 +91,35 @@ module.exports = {
                         }
                     }
                 }
-            // connection.query(sql, function (err, result) 
-            // {
-            //     if (err)
-            //     {
-            //         console.log(err.stack);
-            //         return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to list activities!");
-            //     }
-            //     if (result[0] == undefined)         // no activity in sections
-            //     {
-            //         return message.channel.send("No section activity found!").catch(console.log);
-            //     }
-            //     else
-            //     {
-            //         // const embed = new discord.RichEmbed()
-            //         //     .setColor('RED')
-            //         //     .setTitle('Section Activities')
-            //         //     .setDescription('Section name and total activities:')
-            //         //     .setAuthor(message.guild.name, message.guild.iconURL)
-            //         //     .setTimestamp();
-            //         var i = 0;
-            //         while(result[i])
-            //         {
-            //             embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
-            //             i++;
-            //         }
+                // connection.query(sql, function (err, result) 
+                // {
+                //     if (err)
+                //     {
+                //         console.log(err.stack);
+                //         return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to list activities!");
+                //     }
+                //     if (result[0] == undefined)         // no activity in sections
+                //     {
+                //         return message.channel.send("No section activity found!").catch(console.log);
+                //     }
+                //     else
+                //     {
+                //         // const embed = new discord.RichEmbed()
+                //         //     .setColor('RED')
+                //         //     .setTitle('Section Activities')
+                //         //     .setDescription('Section name and total activities:')
+                //         //     .setAuthor(message.guild.name, message.guild.iconURL)
+                //         //     .setTimestamp();
+                //         var i = 0;
+                //         while(result[i])
+                //         {
+                //             embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
+                //             i++;
+                //         }
 
-            //     }
-            // })
+                //     }
+                // })
+                console.log(embed);
                 message.channel.send(embed)
                     .catch(console.log);
             
