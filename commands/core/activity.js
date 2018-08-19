@@ -44,89 +44,89 @@ module.exports = {
                     parentIDS[i] = results[i].parentid;
                     i++;
                 }
-            });
 
-            console.log(parentIDS);
+                console.log(parentIDS);
 
-            const embed = new discord.RichEmbed()
-                .setColor('RED')
-                .setTitle('Section Activities')
-                .setDescription('Section name and activities:')
-                .setAuthor(message.guild.name, message.guild.iconURL)
-                .setTimestamp();
+                const embed = new discord.RichEmbed()
+                    .setColor('RED')
+                    .setTitle('Section Activities')
+                    .setDescription('Section name and activities:')
+                    .setAuthor(message.guild.name, message.guild.iconURL)
+                    .setTimestamp();
 
 
-            if (args[0] == "list")
-            {
-                if (args[1] == "all")
+                if (args[0] == "list")
                 {
-                    console.log("all");
-                    let i = 0;
-                    while(parentIDS[i])
+                    if (args[1] == "all")
                     {
-                        sql = "SELECT * FROM events WHERE parentid = '" + parentIDS[i] +"';"
-                        connection.query(sql, function (err, results) {
-                            if (err)
-                            {
-                                console.log(err.stack);
-                                return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
-                            }
-                            console.log("attempt add");
-                            embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
-                        }); 
+                        console.log("all");
+                        let i = 0;
+                        while(parentIDS[i])
+                        {
+                            sql = "SELECT * FROM events WHERE parentid = '" + parentIDS[i] +"';"
+                            connection.query(sql, function (err, results) {
+                                if (err)
+                                {
+                                    console.log(err.stack);
+                                    return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
+                                }
+                                console.log("attempt add");
+                                embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
+                            }); 
+                        }
+                    }
+                    else
+                    {
+                        
+                        console.log("list");
+                        let i = 0;
+                        while(parentIDS[i])
+                        {
+                            sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NEW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
+                            connection.query(sql, function (err, results) {
+                                if (err)
+                                {
+                                    console.log(err.stack);
+                                    return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
+                                }
+                                console.log("attempt add2");
+                                embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
+                            }); 
+                        }
                     }
                 }
-                else
-                {
-                    
-                    console.log("list");
-                    let i = 0;
-                    while(parentIDS[i])
-                    {
-                        sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NEW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[i] +"';";
-                        connection.query(sql, function (err, results) {
-                            if (err)
-                            {
-                                console.log(err.stack);
-                                return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
-                            }
-                            console.log("attempt add2");
-                            embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
-                        }); 
-                    }
-                }
-            }
-        // connection.query(sql, function (err, result) 
-        // {
-        //     if (err)
-        //     {
-        //         console.log(err.stack);
-        //         return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to list activities!");
-        //     }
-        //     if (result[0] == undefined)         // no activity in sections
-        //     {
-        //         return message.channel.send("No section activity found!").catch(console.log);
-        //     }
-        //     else
-        //     {
-        //         // const embed = new discord.RichEmbed()
-        //         //     .setColor('RED')
-        //         //     .setTitle('Section Activities')
-        //         //     .setDescription('Section name and total activities:')
-        //         //     .setAuthor(message.guild.name, message.guild.iconURL)
-        //         //     .setTimestamp();
-        //         var i = 0;
-        //         while(result[i])
-        //         {
-        //             embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
-        //             i++;
-        //         }
+            // connection.query(sql, function (err, result) 
+            // {
+            //     if (err)
+            //     {
+            //         console.log(err.stack);
+            //         return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to list activities!");
+            //     }
+            //     if (result[0] == undefined)         // no activity in sections
+            //     {
+            //         return message.channel.send("No section activity found!").catch(console.log);
+            //     }
+            //     else
+            //     {
+            //         // const embed = new discord.RichEmbed()
+            //         //     .setColor('RED')
+            //         //     .setTitle('Section Activities')
+            //         //     .setDescription('Section name and total activities:')
+            //         //     .setAuthor(message.guild.name, message.guild.iconURL)
+            //         //     .setTimestamp();
+            //         var i = 0;
+            //         while(result[i])
+            //         {
+            //             embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
+            //             i++;
+            //         }
 
-        //     }
-        // })
-            message.channel.send(embed)
-                .catch(console.log);
-                
+            //     }
+            // })
+                message.channel.send(embed)
+                    .catch(console.log);
+            
+            });        
         });
 	},
 };
