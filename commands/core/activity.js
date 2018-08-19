@@ -75,8 +75,8 @@ module.exports = {
                         var k = 0;
                         while(parentIDS[k])
                         {
-                            console.log(parentIDS[k]);
-                            sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + parentIDS[k] +"';";
+                            let currentid = parentIDS[k];
+                            sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + currentid +"';";
                             connection.query(sql, function (err, result) {
                                 if (err)
                                 {
@@ -84,7 +84,7 @@ module.exports = {
                                     return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
                                 }
                                 embed.addField("__" + result[0].parentname + ":__", result.length);
-                                console.log(parentIDS[k] + ": " + result.length)
+                                console.log(currentid + ": " + result.length)
                             }); 
                             k++;
                         }
