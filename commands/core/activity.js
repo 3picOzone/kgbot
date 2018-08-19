@@ -27,7 +27,6 @@ module.exports = {
                 return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
             }
             numParents = parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", ""));
-            console.log("number of parents: " + numParents)
             var parentIDS = new Array(numParents);
             sql = "SELECT DISTINCT parentid FROM events;"
             connection.query(sql, function (err, results) {
@@ -40,12 +39,9 @@ module.exports = {
                 let i = 0;
                 while(results[i])
                 {
-                    console.log(results[i].parentid);
                     parentIDS[i] = results[i].parentid;
                     i++;
                 }
-
-                console.log(parentIDS);
 
                 const embed = new discord.RichEmbed()
                     .setColor('RED')
@@ -59,7 +55,6 @@ module.exports = {
                 {
                     if (args[1] == "all")
                     {
-                        console.log("all");
                         let i = 0;
                         while(parentIDS[i])
                         {
@@ -72,13 +67,12 @@ module.exports = {
                                 }
                                 console.log("attempt add");
                                 embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
+                                i++;
                             }); 
                         }
                     }
                     else
                     {
-                        
-                        console.log("list");
                         let i = 0;
                         while(parentIDS[i])
                         {
@@ -92,6 +86,7 @@ module.exports = {
                                 console.log("attempt add2");
                                 embed.addField("__" + message.guild.channels.find('id', parentIDS[i]).name.replace(/\W/g, '') + ":__", results.length);
                             }); 
+                            i++;
                         }
                     }
                 }
