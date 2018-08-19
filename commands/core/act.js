@@ -1,6 +1,8 @@
 const settings = require('../../settings.json');   										// THIS FILE NEEDS TO BE IN THE COMMANDS FOLDER!!!!!!!
 const discord = require ('discord.js');
 
+var parentIDS;
+
 module.exports = {
 	name: 'act',                  	 									        	    // Command name (same as the file.js name)
 	description: 'Get information on section activity',									// info that gets pulled by the help command for a description
@@ -16,12 +18,9 @@ module.exports = {
     async execute(message, args, connection)         					        				// Function Goes Here
 	{  
         var sql;
-        var parentIDS;
         var results;
         sql = "SELECT DISTINCT parentid FROM events;";
-        await queryDB(sql, message, connection).then(results => {console.log("then results: " + results);});
-        console.log("after function results: " + results);
-        for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
+        await queryDB(sql, message, connection, "ids");
 
         const embed = new discord.RichEmbed()
             .setColor('RED')
@@ -62,10 +61,10 @@ module.exports = {
 async function addToEmbed(results, currentid, embed)
 {
     embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", results.length, true);
-    return Promise.resolve(embed);
+    return;
 }
 
-async function queryDB(sql, message, connection)
+async function queryDB(sql, message, connection, arg)
 {
     var rows
     connection.query(sql, function (err, rows) {
@@ -74,7 +73,12 @@ async function queryDB(sql, message, connection)
             console.log(err.stack);
             return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
         }
-        console.log("in function results: " + rows);
-        return Promise.resolve(rows);
+        if(arg) await placeIDS(rows);
+        return;
     });
+}
+
+async function placeIDS(results)
+{
+    for(let i = 0; results[i] != undefined; i++){parentIDS[i] = results[i].parentid;}
 }
