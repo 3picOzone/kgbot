@@ -13,122 +13,31 @@ module.exports = {
 	ownerOnly: false,																	// should this command be only used by the bot owner (3pic_Ozone)
 	hidden: true,                                                                       // should this command be hidden from the help menu
 	disabled: false,																	// should this command be available to be used
-    execute(message, args, connection)         									        // Function Goes Here
+    async execute(message, args, connection)         									// Function Goes Here
 	{  
         var sql; 
-        var numParents;
-        var test;
 
-        sql = "SELECT COUNT(DISTINCT parentid) FROM events;";
+        sql = "SELECT parentid,COUNT(*) as activity FROM events GROUP BY parentid ORDER BY activity DESC;";
         connection.query(sql, function (err, results) {
             if (err)
             {
                 console.log(err.stack);
                 return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
             }
-            numParents = parseInt(JSON.stringify(results[0]).split(":").pop().replace("}", ""));
-            var parentIDS = new Array(numParents);
-            sql = "SELECT DISTINCT parentid FROM events;"
-            connection.query(sql, function (err, results) {
-                if (err)
-                {
-                    console.log(err.stack);
-                    return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
-                }
-                
-                let i = 0;
-                while(results[i])
-                {
-                    parentIDS[i] = results[i].parentid;
-                    i++;
-                }
+            const embed = await new discord.RichEmbed()
+                .setColor('RED')
+                .setTitle('Section Activities')
+                .setDescription('Section name and activities:')
+                .setAuthor(message.guild.name, message.guild.iconURL)
+                .setTimestamp();
 
-                const embed = new discord.RichEmbed()
-                    .setColor('RED')
-                    .setTitle('Section Activities')
-                    .setDescription('Section name and activities:')
-                    .setAuthor(message.guild.name, message.guild.iconURL)
-                    .setTimestamp();
+            for(let i = 0; results[i] != undefined; i++)
+            {
+                embed.addField("__" + message.guild.channels.get(results[i].parentid).name.replace(/\W/g, '') + ":__", results[i].activity, true);
+            }
 
-
-                if (args[0] == "list")
-                {
-                    if (args[1] == "all")
-                    {
-                        var j = 0;
-                        while(parentIDS[j])
-                        {
-                            let currentid = parentIDS[j];
-                            sql = "SELECT * FROM events WHERE parentid = '" + currentid +"';";
-                            connection.query(sql, function (err, result) {
-                                if (err)
-                                {
-                                    console.log(err.stack);
-                                    return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
-                                }
-                                embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", result.length);
-                                if(embed.fields.length == numParents)
-                                {              
-                                    message.channel.send(embed)
-                                        .catch(console.log);
-                                }
-                            }); 
-                            j++;
-                        }
-                    }
-                    else
-                    {
-                        var k = 0;
-                        while(parentIDS[k])
-                        {
-                            let currentid = parentIDS[k];
-                            sql = "SELECT * FROM events WHERE eventtimestamp > DATE_SUB(NOW(), INTERVAL 30 DAY) AND parentid = '" + currentid +"';";
-                            connection.query(sql, function (err, result) {
-                                if (err)
-                                {
-                                    console.log(err.stack);
-                                    return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
-                                }
-                                embed.addField("__" + message.guild.channels.get(currentid).name.replace(/\W/g, '') + ":__", result.length);
-                                if(embed.fields.length == numParents)
-                                {              
-                                    message.channel.send(embed)
-                                        .catch(console.log);
-                                }
-                            }); 
-                            k++;
-                        }
-                    }
-                }
-                // connection.query(sql, function (err, result) 
-                // {
-                //     if (err)
-                //     {
-                //         console.log(err.stack);
-                //         return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to list activities!");
-                //     }
-                //     if (result[0] == undefined)         // no activity in sections
-                //     {
-                //         return message.channel.send("No section activity found!").catch(console.log);
-                //     }
-                //     else
-                //     {
-                //         // const embed = new discord.RichEmbed()
-                //         //     .setColor('RED')
-                //         //     .setTitle('Section Activities')
-                //         //     .setDescription('Section name and total activities:')
-                //         //     .setAuthor(message.guild.name, message.guild.iconURL)
-                //         //     .setTimestamp();
-                //         var i = 0;
-                //         while(result[i])
-                //         {
-                //             embed.addField("__" + message.guild.channels.find('id', result[i].sectionID).name.replace(/\W/g, '') + ":__ ", parseInt(result[i].totalActivityVoice) + parseInt(result[i].totalActivityMessage), true);
-                //             i++;
-                //         }
-
-                //     }
-                // })            
-            });        
+            message.channel.send(embed)
+                .catch(console.log);     
         });
 	},
 };
