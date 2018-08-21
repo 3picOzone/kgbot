@@ -24,7 +24,7 @@ module.exports = {
                 console.log(err.stack);
                 return message.guild.channels.find('name', 'tech-talk').send("There was a Database Error when attempting to get events from events table");
             }
-            const embed = await new discord.RichEmbed()
+            const embed = new discord.RichEmbed()
                 .setColor('RED')
                 .setTitle('Section Activities')
                 .setDescription('Section name and activities:')
