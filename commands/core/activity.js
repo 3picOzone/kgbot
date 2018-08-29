@@ -4,7 +4,7 @@ const discord = require ('discord.js');
 module.exports = {
 	name: 'activity',                  	 									        	// Command name (same as the file.js name)
 	description: 'Get information on section activity',									// info that gets pulled by the help command for a description
-	aliases: ['activities','a'],  						                					// Optional saiases for the command
+	aliases: ['activities','a'],  						                			    // Optional saiases for the command
 	usage: '',                          							        			// For help command or if command was sent wrong
 	requiredRoles: ['Technician', 'Officer', 'Clan Leader'],							// an array of role names that are required to run the command or (false || ['']) to disable
 	cooldown: 10,                            											// Optional Cooldown Between Uses (defaults to 3 seconds if none set)
@@ -33,7 +33,7 @@ module.exports = {
 
             for(let i = 0; results[i] != undefined; i++)
             {
-                embed.addField("__" + message.guild.channels.get(results[i].parentid).name.replace(/\W/g, '') + ":__", results[i].activity, true);
+                if(message.guild.channels.get(results[i].parentid) != undefined) embed.addField("__" + message.guild.channels.get(results[i].parentid).name.replace(/\W/g, '') + ":__", results[i].activity, true);
             }
 
             message.channel.send(embed)
