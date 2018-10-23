@@ -1,2 +1,3 @@
 # kgbot for Konvict Gaming
-test update
+
+This bot adds commands and functionality for the Konvict Gaming Discord
