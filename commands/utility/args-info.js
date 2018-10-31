@@ -6,7 +6,7 @@ module.exports = {
 	aliases: ['args'],  																// Optional saiases for the command
 	usage: '<args>',                													// For help command or if command was sent wrong
 	requiredRoles: [''],																// an array of role names that are required to run the command or (false || ['']) to disable
-	cooldown: 0,                            											// Optional Cooldown Between Uses (defaults to 3 seconds if none set)
+	cooldown: 5,                            											// Optional Cooldown Between Uses (defaults to 3 seconds if none set)
     args: true,                            												// true/false are there any args for this command?
 	guildOnly: false,                       											// true/false should it only be used in guild channels and not in PM's
 	ownerOnly: false,																	// should this command be only used by the bot owner (3pic_Ozone)
