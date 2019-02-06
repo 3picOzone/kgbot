@@ -37,7 +37,7 @@ module.exports=
                 currentGuild = newMember.voiceChannel.guild;
             }
 
-            currentGuild.channels.find("name", "application-notifications").send(currentGuild.roles.find("name", "Moderator") + " " +  currentGuild.roles.find("name", "Mod Leader") + " A user has joined the application channel: " + currentMember);
+            currentGuild.channels.find("name", "application-notifications").send(currentGuild.roles.find("name", "Moderator") + " " +  currentGuild.roles.find("name", "Mod Leader") + currentGuild.roles.find("name", "Officer") + " " + currentGuild.roles.find("name", "Clan Leader") + " A user has joined the application channel: " + currentMember);
         }
         else return;
     },   
