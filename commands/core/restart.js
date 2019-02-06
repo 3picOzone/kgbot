@@ -16,7 +16,7 @@ module.exports = {
     async execute(message, args, connection)         									// Function Goes Here
 	{
         message.reply("Bot Restarting!").then(
-        exec.execFile("/home/epic_ozone/kgbot/restart.sh"));
+        exec.execFile("./restart.sh"));
     },
 };
 
