@@ -2,80 +2,84 @@ const settings = require('../settings.json');
 
 module.exports= 
 {
-    async execute(oldMember, newMember)
+    async execute(oldState, newState)
     {
-        var dynamicToken = settings.dynamicChannelStaffToken;
-        var parent;
-        // insure that the token is in the name of the channels effected
-        if ((oldMember.voiceChannel !== undefined && oldMember.voiceChannel.name.includes(dynamicToken)) ||
-            (newMember.voiceChannel !== undefined && newMember.voiceChannel.name.includes(dynamicToken)))     							  // Channel name has the token
-        {   
-            var currentGuild = undefined; 
-            if (oldMember.voiceChannel !== undefined)
+        if (oldState.channel != undefined && oldState.channel.parent != undefined && /\[.*\].*/.test(oldState.channel.name) )        // Member was in a channel before where it included dynamicness
+        {
+            var prefix = oldState.channel.name.slice(0,oldState.channel.name.lastIndexOf("]") + 1);
+            var empty = countEmptyChannels(oldState.channel.parent, prefix); 
+
+            // Delete a channel, there is more than one
+            if(empty > 1)
             {
-                currentGuild = oldMember.voiceChannel.guild;
+                deleteEmptyChannelWithPrefix(empty - 1, prefix, oldState.channel.parent);
             }
-            else if (newMember.voiceChannel !== undefined)
+        } 
+        if (newState.channel != undefined && newState.channel.parent != undefined && /\[.*\].*/.test(newState.channel.name) )
+        {
+            var prefix = newState.channel.name.slice(0,newState.channel.name.lastIndexOf("]") + 1);
+            var empty = countEmptyChannels(newState.channel.parent, prefix); 
+            // Add a new channel
+            if(empty == 0)
             {
-                currentGuild = newMember.voiceChannel.guild;
-            }
-            
-            let emptyRooms = 0;
-            for (channel of currentGuild.channels.values())
-            {               
-                if (channel.type === "voice" && channel.name.includes(dynamicToken)) 
-                {
-                    parent = channel.parentID
-                    //console.log(channel.name);
-                    if(channel.members.size == 0)
-                    {
-                        emptyRooms++;
-                    }
-                }
-            }
-            // console.log(`Total empty rooms: ${emptyRooms}`);           
-            
-            // Delete a channel
-            if (emptyRooms > 1)
-            {
-                // find any empty room to delete until there is only one left
-                for(channel of currentGuild.channels.values())
-                {
-                    if (channel.type === "voice" && channel.name.includes(dynamicToken) && channel.members.size == 0 && emptyRooms > 1)
-                    {  
-                        channel.delete()
-                            .then() // do nothing // channel => console.log(`Deleted ${channel.name} to make room for new channels`))
-                            .catch(console.error); // Log error
-                        emptyRooms--;
-                    }                
-                }
-            }
-            // Create a channel
-            else if (emptyRooms == 0)
-            {
-                currentGuild.createChannel(dynamicToken + ' Meeting', 'voice', [
-                    {
-                        id: currentGuild.roles.find("name", "Moderator"),
-                        allow: ['VIEW_CHANNEL', 'CONNECT'],
-                    },
-                    {
-                        id: currentGuild.roles.find("name", "Mod Leader"),
-                        allow: ["VIEW_CHANNEL", "CONNECT"],
-                        deny: ["MANAGE_CHANNELS","MANAGE_ROLES"]
-                    },
-                    {
-                        id: currentGuild.roles.find("name", "Technician"),
-                        allow: ["VIEW_CHANNEL", "CONNECT"],
-                        deny: ["MANAGE_CHANNELS","MANAGE_ROLES"]
-                    },
-                    {
-                        id: currentGuild.defaultRole,
-                        deny: ["VIEW_CHANNEL","CONNECT"]
-                    }
-                ])
-                    .then(channel => channel.setParent(parent))
-                    .catch(error => console.log(error));
+                var channelToClone = findChannelToClone(newState.channel.parent, prefix)
+                cloneChannelAndMoveBelow(channelToClone);
             }
         }
     },   
 };      
+
+// counts the number of empty channels that contain the prefix provided that are under the provided parent
+function countEmptyChannels(parent, prefix)
+{
+    var count = 0;
+    parent.children.forEach(channel => {
+        if(channel.name.includes(prefix) && channel.type == "voice" && channel.members.size == 0) 
+        {
+            count++;
+        }
+    });                
+    return count;
+}
+
+// Deletes a channel(s), with provided prefix
+function deleteEmptyChannelWithPrefix(empty, prefix, parent)
+{
+    parent.children.forEach(channel => {
+        if(channel.name.includes(prefix) && channel.type == "voice" && channel.members.size == 0 && empty >= 1)
+        {
+            channel.delete().then(/* do nothing */).catch(console.error);
+            empty--;
+        }
+    });
+}
+
+// Add a new channel by cloning the provided one (should be the last one in the list)
+function cloneChannelAndMoveBelow(channelToClone)
+{
+    channelToClone.clone()
+        .then(clone => {
+            clone.setParent(channelToClone.parent)
+                .then(clonedAndMoved => {
+                    clonedAndMoved.setPosition(channelToClone.position+1)
+                        .then(/* do nothing */)
+                      .catch(console.error);
+                })
+                .catch(console.error);
+            })
+        .catch(console.error);
+}
+
+function findChannelToClone(parent, prefix)
+{
+    var lowestChannel;
+    var lowestPosition = -1
+    parent.children.forEach(channel => {
+        if(channel.name.includes(prefix) && channel.type == "voice" && channel.position > lowestPosition)
+        {
+            lowestChannel = channel;
+            lowestPosition = channel.position;
+        }
+    })
+    return lowestChannel;
+}
