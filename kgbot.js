@@ -216,7 +216,7 @@
                     if (command.requiredRoles[0] == '' || command.requiredRoles[0] == 'none' ) perms = true;                                           // if array is empty set to true 
                     for(role of command.requiredRoles)
                     {
-                        if (message.member.roles.exists("name", role)) perms = true;
+                        if (message.member.roles.some( i => {i.name == role})) perms = true;
                     }
                     if (!perms) return message.reply("You do not have permissions for this command");
                 }

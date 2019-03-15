@@ -7,21 +7,15 @@ module.exports=
         if (oldMember.voiceChannel == newMember.voiceChannel) return;
         if (newMember.voiceChannel !== undefined && newMember.voiceChannel.name.toLowerCase().includes("applicants")) 
         {
-            if (  (newMember.voiceChannel !== undefined && (newMember.roles.exists("name", "Mod Leader") || 
-                                                            newMember.roles.exists("name", "Moderator") || 
-                                                            newMember.roles.exists("name", "Officer") || 
-                                                            newMember.roles.exists("name", "Clan Leader") || 
-                                                            newMember.roles.exists("name", "Technician") )))
+            if (  (newMember.voiceChannel !== undefined && (newMember.roles.some( i => {i.name == "Mod Leader" || i.name == "Moderator" || 
+                                                                                        i.name == "Officer" || i.name == "Clan Leader" || i.name == "Technician"}) )))
             {
                 let message = newMember + " joined the application channel with: ";
                 let usersInChannel = newMember.voiceChannel.members.values();
                 for (let next of usersInChannel)
                 {                    
-                    if (!(  next.roles.exists("name", "Mod Leader") || 
-                            next.roles.exists("name", "Moderator") || 
-                            next.roles.exists("name", "Officer") || 
-                            next.roles.exists("name", "Clan Leader") || 
-                            next.roles.exists("name", "Technician") ))
+                    if (!(  next.roles.some( i => {i.name == "Mod Leader" || i.name == "Moderator" || 
+                                                   i.name == "Officer" || i.name == "Clan Leader" || i.name == "Technician"}) ))
                     {
                         message += next + " ";
                     } 
