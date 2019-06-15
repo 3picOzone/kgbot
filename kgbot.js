@@ -216,7 +216,7 @@
                     if (command.requiredRoles[0] == '' || command.requiredRoles[0] == 'none' ) perms = true;                                           // if array is empty set to true 
                     for(role of command.requiredRoles)
                     {
-                        if (message.member.roles.some( i => {i.name == role})) perms = true;
+                        if (message.member.roles.some( i => { return i.name == role; })) perms= true;
                     }
                     if (!perms) return message.reply("You do not have permissions for this command");
                 }
@@ -238,7 +238,7 @@
     {
         _dynamicChannels.execute(oldMember, newMember);
         _modPoke.execute(oldMember, newMember);
-        _streamers.execute(oldMember, newMember);
+        //_streamers.execute(oldMember, newMember);
         _activityVoice.execute(oldMember, newMember,connection);
     };
 
@@ -281,34 +281,33 @@
 
     async function onRaw(event) // so that all events trigger for all messages (reactions)
     {
-            // console.log(event);
-            if (event.t == 'MESSAGE_REACTION_ADD')
+            if (event.t == 'MESSAGE_REACTION_ADD' )
             {
                 const { d: data } = event;
-                const channel = client.channels.get(data.channel_id);
+                const channel = await client.channels.fetch(data.channel_id);
         
                 if (channel.messages.has(data.message_id)) return;
         
-                const user = client.users.get(data.user_id);
-                const message = await channel.fetchMessage(data.message_id);
+                const user = await client.users.fetch(data.user_id);
+                const message = await channel.messages.fetch(data.message_id);
         
-                const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-                const reaction = message.reactions.get(emojiKey);
+                const emojiKey = `${data.emoji.id}`;
+                const reaction = await message.reactions.get(emojiKey);
         
                 client.emit('messageReactionAdd', reaction, user);
             }
             else if (event.t == 'MESSAGE_REACTION_REMOVE')
             {
                 const { d: data } = event;
-                const channel = client.channels.get(data.channel_id);
-        
+                const channel = await client.channels.fetch(data.channel_id);
+                
                 if (channel.messages.has(data.message_id)) return;
         
-                const user = client.users.get(data.user_id);
-                const message = await channel.fetchMessage(data.message_id);
+                const user = await client.users.fetch(data.user_id);
+                const message = await channel.messages.fetch(data.message_id);
         
-                const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-                const reaction = message.reactions.get(emojiKey);
+                const emojiKey = `${data.emoji.id}`;
+                const reaction = await message.reactions.get(emojiKey);
         
                 client.emit('messageReactionRemove', reaction, user);
             }
